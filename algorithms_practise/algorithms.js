@@ -7,3 +7,6 @@
 // they will be covered in future challenges. For now, only use operators that
 // you have already learned.
 
+
+const celsiusToFahrenheit = (celsiusTemp) =>  (celsiusTemp*9/5) + 32;
+console.log(celsiusToFahrenheit(24));
