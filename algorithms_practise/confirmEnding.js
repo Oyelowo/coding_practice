@@ -9,4 +9,4 @@ const confirmEndingAlt = (string, endsWith) => {
     return string.substring(string.length-endsWith.length)===endsWith;
 };
 
-console.log(confirmEnding('Oyelowo', 'owo'));
+console.log(confirmEnding('Oyelowo', 'owo')); 
