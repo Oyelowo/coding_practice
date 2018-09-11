@@ -4,6 +4,7 @@
 // Return the resulting array. The input arrays should remain the same after the
 // function runs.
 
-const frankenSplice = (arr1, arr2, n) => arr2.splice(n, 0, 'arr1');
-console.log([4,3,6].splice(1,0,'444'));
+const frankenSplice = (arr1, arr2, n) =>  [...arr2.slice(0,n), ...arr1, ...arr2.slice(n,)];
+
+
 console.log(frankenSplice([1, 2, 3], [4, 5, 6], 1));
