@@ -29,6 +29,6 @@ const mutation = (arr) => {
 //   return true 
 // };
 
- console.log(mutation(["hello", "hlle"]));
+ console.log(mutation(["hello", "hey"]));
  console.log(mutation(["zyxwvutsrqponmlkjihgfedcba", "qrstu"]));
  console.log(mutation(["Mary", "Aarmy"]));
