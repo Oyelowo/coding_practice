@@ -5,5 +5,5 @@
 // function runs.
 
 const frankenSplice = (arr1, arr2, n) => arr2.splice(n, 0, 'arr1');
-
+console.log([4,3,6].splice(1,0,'444'));
 console.log(frankenSplice([1, 2, 3], [4, 5, 6], 1));
