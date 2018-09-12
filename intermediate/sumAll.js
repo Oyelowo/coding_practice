@@ -3,11 +3,12 @@
 // always come first.
 
 const sumAll = (arr) => {
-    let smallerNumber = Math.min(...arr);
-    let largerNumber = Math.max(...arr);
-    let number = smallerNumber;
-    while (number <= largerNumber) {
-        number++;
+    let [smallerNumber, largerNumber] = [Math.min(...arr), Math.max(...arr)];
+    let number = 0
+    while (smallerNumber <= largerNumber) {
+        number += smallerNumber;
+        smallerNumber++;
     }
     return number;
 };
+console.log(sumAll([1, 4]));
