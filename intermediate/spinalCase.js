@@ -8,7 +8,7 @@ const isUpperCase = (letter) => letter === letter.toUpperCase() && !typeof(lette
 const spinalCase = (str) => {
     for(let item of str) {
       if(isUpperCase(item)){
-          
+          console.log(item)
       }
     }
     
