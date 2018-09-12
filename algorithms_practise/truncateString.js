@@ -2,7 +2,7 @@
 // string length (second argument). Return the truncated string with a ...
 // ending.
 
-const truncateString = (str, num) => str.length >num ?`${str.substring(0, num + 1)}...`: str;
+const truncateString = (str, num) => str.length >num ?`${str.substring(0, num)}...`: str;
 
 console.log(truncateString("Peter Piper picked a peck of pickled peppers", 11))
 console.log( truncateString("A-tisket a-tasket A green and yellow basket", 8));
