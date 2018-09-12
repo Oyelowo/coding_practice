@@ -4,9 +4,11 @@
 // this challenge, we would like you to use one of the JavaScript substring
 // methods instead.
 
-const confirmEnding = (string, endsWith) => string.endsWith(endsWith);
-const confirmEndingAlt = (string, endsWith) => {
-    return string.substring(string.length-endsWith.length)===endsWith;
+const confirmEnding = (string, target) => {
+    return string.substring(string.length-target.length)===target;
 };
+
+const confirmEndingAlt = (string, target) => string.endsWith(target);
+
 
 console.log(confirmEnding('Oyelowo', 'owo')); 
