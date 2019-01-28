@@ -8,4 +8,4 @@ console.log( booWho('true'));
 console.log( booWho(false));
 console.log( booWho('false'));
 console.log(booWho([].slice));
-console.log(booWho(NaN));
+console.log(booWho(NaN)); 
