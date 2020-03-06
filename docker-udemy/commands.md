@@ -52,7 +52,7 @@ This is then passed to the docker-cli which is then passed to docker-server whic
 - Tagging the image - building with a name
 `docker build -t oyelowo/redis:latest .`
 
-oyelowo - dockerhub name
+oyelowo - dockerhub name of repository
 redis - project
 latest - version tag
 
@@ -74,3 +74,6 @@ e.g download and run apline image interactively
 - This can then be run e.g 
 - Note: a part of the string can be run. Docker would run it anyways if it is unique.
   `docker run sha256:86ac1d2cb455580f34f9d7c001de9b0b8e888e836b8d6035a261da797929cfbf`
+
+
+  alpine- an image that is as small as possible, with not much programs already installed. so stripped down version of an image
