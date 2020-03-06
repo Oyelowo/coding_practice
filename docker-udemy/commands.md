@@ -47,3 +47,11 @@ This is then passed to the docker-cli which is then passed to docker-server whic
 - Specify base image
 - run some commands to install additional programs
 - specify a command to run the container
+
+
+- Tagging the image - building with a name
+docker build -t oyelowo/redis:latest .
+
+oyelowo - dockerhub name
+redis - project
+latest - version tag
