@@ -77,3 +77,7 @@ e.g download and run apline image interactively
 
 
   alpine- an image that is as small as possible, with not much programs already installed. so stripped down version of an image
+
+# Mapping ports
+Port redirection 8080:8080 = from source e.g in browswer(can be anything) : to port in the container (which is also being used in the web server)
+  `docker run -p 8080:8080 oyelowo/node-app `

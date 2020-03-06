@@ -1,5 +1,7 @@
 # specify a baseimage
-FROM node:6.14
+FROM node:alpine
+
+COPY ./ ./
 
 # install some dependencies
 RUN npm install
