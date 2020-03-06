@@ -50,8 +50,27 @@ This is then passed to the docker-cli which is then passed to docker-server whic
 
 
 - Tagging the image - building with a name
-docker build -t oyelowo/redis:latest .
+`docker build -t oyelowo/redis:latest .`
 
 oyelowo - dockerhub name
 redis - project
 latest - version tag
+
+
+## Manually creating image from a container -(not a good practise, mostly)
+e.g download and run apline image interactively
+`docker run -it alpine sh`
+
+- run the commands you want as you would declare in a docker file e.g
+  `apk add --update redis`
+
+-open another terminal and check running container
+`docker ps`
+
+-copy the container from the earlier run image and commit it
+`docker commit -c 'CMD ["redis-server"]' cb9914566f0a`
+
+- once it is committed, a long sha string is generated e.g sha256:86ac1d2cb455580f34f9d7c001de9b0b8e888e836b8d6035a261da797929cfbf
+- This can then be run e.g 
+- Note: a part of the string can be run. Docker would run it anyways if it is unique.
+  `docker run sha256:86ac1d2cb455580f34f9d7c001de9b0b8e888e836b8d6035a261da797929cfbf`
