@@ -29,3 +29,10 @@ SIGKILL - kill signal. Shut down right now without doing any additional work
 sh is name of a program being run in the container. It is a shell that allows us run a program in the container. There are also
 bash,powershell, zsh and sh. Most containers have sh already included and bash sometimes also.
 `docker exec -it a5fee72ead8b sh`
+
+- useful sometimes if you want to poke around. But mostly, you want a primary process running first
+`docker run -it busybox sh`
+
+
+
+-Two containers dont automatically share their file systems, unless specifically specify this. They are two isolated systems
