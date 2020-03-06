@@ -36,3 +36,14 @@ bash,powershell, zsh and sh. Most containers have sh already included and bash s
 
 
 -Two containers dont automatically share their file systems, unless specifically specify this. They are two isolated systems
+
+
+# Dockerfile - Making custom image
+has some files in it which specifies how our program behaves.
+
+This is then passed to the docker-cli which is then passed to docker-server which builds a usable image that can be used to start a container
+
+## Steps
+- Specify base image
+- run some commands to install additional programs
+- specify a command to run the container
