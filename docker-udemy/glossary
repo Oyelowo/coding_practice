@@ -1,0 +1,3 @@
+SIGTERM - terminate signals. This gives some additional time to shut down. If container doesnt shutdown in 10 seconds, it falls back to docker kill
+
+SIGKILL - kill signal. Shut down right now without doing any additional work
