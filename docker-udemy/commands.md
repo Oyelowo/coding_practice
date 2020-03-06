@@ -22,3 +22,10 @@ SIGKILL - kill signal. Shut down right now without doing any additional work
 `docker stop`
 
 `docker kill`
+
+
+`docker exec -it <container-id> <command>`
+
+sh is name of a program being run in the container. It is a shell that allows us run a program in the container. There are also
+bash,powershell, zsh and sh. Most containers have sh already included and bash sometimes also.
+`docker exec -it a5fee72ead8b sh`
