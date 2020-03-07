@@ -9,3 +9,10 @@
 
 # stop all containers
 `docker-compose down`
+
+# Restart policies
+
+no - never restart
+always: restart always if container stops. Good for web-service that we want available everytime
+on-failure: when container stops with error code. i.e 0. Other numbers 1 upwards, isnt error. Maybe good for worker process
+unless-stopped: always unless I specifically sop it
