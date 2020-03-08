@@ -1,0 +1,19 @@
+version: '3'
+services: 
+    react-app:
+        build:  # we are not just using . since wee are using different name for dockerfile
+            context: . # look in the present dir
+            dockerfile: Dockerfile.dev # find the file with this name
+        ports: 
+            - "3000:3000"
+        volumes: #this allows reruning of app
+            - /app/node_modules
+            - .:/app
+    tests:
+        build:  # we are not just using . since wee are using different name for dockerfile
+            context: . # look in the present dir
+            dockerfile: Dockerfile.dev # find the file with this name
+        volumes: #this allows reruning of app
+            - /app/node_modules
+            - .:/app
+        command: ["npm", "test"]

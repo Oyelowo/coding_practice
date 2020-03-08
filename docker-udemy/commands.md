@@ -33,7 +33,8 @@ bash,powershell, zsh and sh. Most containers have sh already included and bash s
 - useful sometimes if you want to poke around. But mostly, you want a primary process running first
 `docker run -it busybox sh`
 
-
+# if using another file name e.g Dockerfile.dev, you need to use the .f flag
+`docker build -f Dockerfile.dev .`
 
 -Two containers dont automatically share their file systems, unless specifically specify this. They are two isolated systems
 
