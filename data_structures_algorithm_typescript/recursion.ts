@@ -5,6 +5,25 @@ const factorial = (n: number) => {
 
 //console.log(factorial(60));
 
+const fib = (n: number) => {
+  if (n <= 2) return 1;
+  return fib(n - 1) + fib(n - 2);
+};
+
+//console.log(fib(12));
+
+// Bottom up approach is a lot more efficient with 0(n) time complexity
+const fib_buttom_up = (n: number) => {
+  if (n < 3) return 1;
+  let arr = [null, 1, 1];
+  for (let i = 3; i <= n; i++) {
+    arr[i] = arr[i - 1] + arr[i - 2];
+  }
+  return arr[n];
+};
+
+console.log(fib_buttom_up(669));
+
 const camelize = (word: string) =>
   word
     .split("_")
