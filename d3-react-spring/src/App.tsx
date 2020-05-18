@@ -1,18 +1,20 @@
 import React from "react";
 import "./App.css";
 import Chart from "./Chart";
+import Spring from "./Spring";
 
 function App() {
   return (
     <div
       className=""
       style={{
-        margin: "auto",
+        marginTop: 300,
         display: "grid",
         justifyItems: "center",
         alignItems: "center",
       }}
     >
+      <Spring />
       <Chart />
     </div>
   );

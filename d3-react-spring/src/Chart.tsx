@@ -1,18 +1,22 @@
-import { max, min } from "d3-array";
+// import * as d3 from "d3-shape";
+import * as d3 from "d3";
+// import { extent } from "d3-array";
+import { axisBottom, axisLeft } from "d3-axis";
 import { scaleLinear, scaleTime } from "d3-scale";
-import * as d3 from "d3-shape";
 import React, { FC } from "react";
+import { animated, useSpring } from "react-spring";
 
+const { extent, line } = d3;
 interface Datum {
   date: Date;
   value: number;
 }
 
 const margin = {
-  left: 15,
-  right: 15,
+  left: 55,
+  right: 95,
   bottom: 15,
-  top: 15,
+  top: 55,
 };
 
 const padding = {
@@ -22,8 +26,10 @@ const padding = {
   top: 5,
 };
 
-const width = 600 - margin.left - margin.right;
-const height = 200 - margin.top - margin.bottom;
+const width = 600;
+const height = 300;
+const chartWidth = width - margin.left - margin.right;
+const chartHeight = height - margin.top - margin.bottom;
 
 const Chart: FC = ({ children }) => {
   const data = [
@@ -34,55 +40,80 @@ const Chart: FC = ({ children }) => {
     { date: new Date(2007, 3, 30), value: 99.8 },
     { date: new Date(2007, 4, 1), value: 99.47 },
   ];
-  
-  const minX = min(data, (d) => d.date) as Date;
-  const maxX = max(data, (d) => d.date) as Date;
 
+  const props2 = useSpring({
+    x: 0,
+    from: { x: 1000 },
+    config: { friction: 50, mass: 1, tension: 102 },
+  });
 
-  const minY = min(data, (d) => d.value) as number;
-  const maxY = max(data, (d) => d.value) as number;
+  const extentY = extent(data, (d) => d.value) as [number, number];
+  const extentX = extent(data, (d) => d.date) as [Date, Date];
 
-  const scaleX = scaleTime()
-    .domain([minX, maxX])
-    .range([margin.left, width])
-    .nice();
-  const scaleY = scaleLinear().domain([minY, maxY]).range([0, height]);
+  const xScale = scaleTime().domain(extentX).range([0, chartWidth]).nice();
+  const yScale = scaleLinear().domain(extentY).range([0, chartHeight]).nice();
 
-  const line3 = d3
-    .line<Datum>()
-    .x((d) => scaleX(d.date))
-    .y((d) => scaleY(d.value));
+  const xAxis = axisBottom(xScale);
+  const yAxis = axisLeft(yScale);
 
-  console.log(line3(data));
-
-  const p = d3
-    .line<{ date: number; value: number }>()
-    .x((d) => scaleX2(d.date))
-    .y((d) => scaleY(d.value));
+  const generateLine = line<Datum>()
+    .curve(d3.curveCardinal)
+    .x((d) => xScale(d.date))
+    .y((d) => yScale(d.value));
 
   return (
-    <div>
-      <g transform={`translate(${margin.left}, ${margin.top})`}>
-        {" "}
-        <svg
-          style={{ background: "#eaeaea" }}
-          width={width}
-          height={height}
-          fill="none"
-          stroke="green"
-        >
-          <path d={line3(data)!} />
+    <animated.div>
+      {" "}
+      <animated.svg
+        style={{ background: "#eaeaea" }}
+        width={width}
+        height={height + 100}
+        fill="none"
+        stroke="green"
+      >
+        <animated.g transform={`translate(${margin.left}, ${margin.top})`}>
+          <rect
+            x={0}
+            y={0}
+            height={chartHeight}
+            width={chartWidth}
+            opacity={0.6}
+            stroke="black"
+          />
+          <animated.path
+            d={generateLine(data)!}
+            strokeDashoffset={props2.x}
+            strokeDasharray="1000"
+          />
           {data.map((d) => (
             <circle
-              cy={scaleY(d.value)}
-              cx={scaleX(d.date)}
+              key={d.value}
+              cy={yScale(d.value)}
+              cx={xScale(d.date)}
               r="3"
               fill="black"
             />
           ))}
-        </svg>
-      </g>
-    </div>
+          <g transform={`translate(${chartWidth + 4},0)`}>
+            {data.map((d) => (
+              <text key={d.value} x={0} y={yScale(d.value)}>
+                {d.value}
+              </text>
+            ))}
+          </g>
+
+          {/* X-axis */}
+          <g transform={`translate(0, ${chartHeight + 13}) rotate(90)`}>
+            <text x={xScale(d3.min(data, (d) => d.date)!)} y={0} dx="0em">
+              {d3.min(data, (d) => d.date)?.toLocaleDateString()}
+            </text>
+            <text x={xScale(d3.max(data, (d) => d.date)!)} y={0}>
+              {d3.max(data, (d) => d.date)?.toLocaleDateString()}
+            </text>
+          </g>
+        </animated.g>
+      </animated.svg>
+    </animated.div>
   );
 };
 
