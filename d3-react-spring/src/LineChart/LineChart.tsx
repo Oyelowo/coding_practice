@@ -1,6 +1,12 @@
 import * as d3 from "d3";
 import { eachDayOfInterval } from "date-fns";
 import React from "react";
+import styled from 'styled-components';
+
+
+const Tooltip = styled.foreignObject({
+  x: 3,
+})
 
 const data = [
   {
