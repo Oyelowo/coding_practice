@@ -108,6 +108,27 @@ The ./ is relative to the build context i.e in(`docker build .`)
 `COPY ./ ./`
 
 
+# Specifying a working directory
+If you use the copy command above, it copies all files to the home 
+directory of the container which is not ideal as their might be conflict with original files in the container. This could also cause this to overwrite exising files e.g
+```
+➜  node-app-docker git:(master) docker run -it oyelowo/nodeapp sh
+/ # ls
+Dockerfile         etc                media              package-lock.json  run                tmp
+Dockerfile_old     home               mnt                package.json       sbin               usr
+bin                index.js           node_modules       proc               srv                var
+dev                lib                opt                root               sys
+/ # 
+```
+In the above all the local files were copied to the container root directory.
+By using `WORKDIR` command, we can specify and any command that follows will be executed relative to that path in the container.
+e.g  and note that /usr/app will be created if it does not exist. We can also use `var` folder i.e /var/app
+`WORKDIR /usr/app`
+
+if we run `COPY ./ ./` after the below, the files in our local build context will be copied into the working directory in the container specied above
+
+
+
 # Docker Run with PORT mapping for incoming requests
 When request is being made to e.g `localhost:8080`, it is not automatically
 forwarded to the container. We can use port mapping to forward the incoming request
