@@ -30,13 +30,28 @@ sh is name of a program being run in the container. It is a shell that allows us
 bash,powershell, zsh and sh. Most containers have sh already included and bash sometimes also.
 `docker exec -it a5fee72ead8b sh`
 
-- useful sometimes if you want to poke around. But mostly, you want a primary process running first
+to exit e.g redis-cli
+`ctr + c`
+
+shell(command processor) allows executing commands
+to exit the shell(command processor) itself
+`ctr + D` or `exit`
+
+- useful sometimes if you want to poke around. But mostly, you want a primary process running first. With this, you will not be able to run any other process(not sure: 2020-07-18). So, likely, you'd want to start a primary process first, and then
+ attach to the container using e.g `docker exec -it a5fee72ead8b sh`:
 `docker run -it busybox sh`
+
+
+-Two containers don't automatically share their file systems, unless specifically specify this. They are two isolated systems
+e.g 
+run `docker run -it busybox sh` on terminal 1 and terminal2
+create a file in the first terminal e.g `touch somefile`
+`docker ps` to check that the two containers exist with the `sh` command
+goto the second terminal and execute `ls`. You will see that the file created in the first container does not show up in the second
 
 # if using another file name e.g Dockerfile.dev, you need to use the .f flag
 `docker build -f Dockerfile.dev .`
 
--Two containers dont automatically share their file systems, unless specifically specify this. They are two isolated systems
 
 
 # Dockerfile - Making custom image
