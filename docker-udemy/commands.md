@@ -66,6 +66,7 @@ This is then passed to the docker-cli which is then passed to docker-server whic
 
 
 - Tagging the image - building with a name
+`docker build -t oyelowo/redis:<version> .`
 `docker build -t oyelowo/redis:latest .`
 
 oyelowo - dockerhub name of repository

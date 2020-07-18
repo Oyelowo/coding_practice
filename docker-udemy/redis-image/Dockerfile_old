@@ -1,7 +1,7 @@
-# use an existing docker image as a base
+# Use an existing docker image as a base
 FROM alpine
 
-# download and install dependency
+# Download and install a dependency
 RUN apk add --update gcc
 RUN apk add --update redis
 
