@@ -175,4 +175,4 @@ COPY ./ ./
 
 CMD ["npm", "start"]
 ```
-
+To test this, build the image and you will notice that `npm install` is run the first time. Then make change to source code, e.g `index.js` and rebuild the image, you will notice that `npm install` in not rerun this time around as it returns from the cache while the latter is rerun
