@@ -98,3 +98,22 @@ e.g download and run apline image interactively
 # Mapping ports
 Port redirection 8080:8080 = from source e.g in browswer(can be anything) : to port in the container (which is also being used in the web server). This is specified at run time
   `docker run -p 8080:8080 oyelowo/node-app `
+
+
+
+
+# Copying files from local directory to container directory
+The ./ is relative to the build context i.e in(`docker build .`)
+`COPY <Current working directory> <image directory>`
+`COPY ./ ./`
+
+
+# Docker Run with PORT mapping for incoming requests
+When request is being made to e.g `localhost:8080`, it is not automatically
+forwarded to the container. We can use port mapping to forward the incoming request
+coming from the browser to the container. E.g below we map 8080 to 8080. The
+latter could also be something else e.g 8080 to 5000. This is only for incoming requests. Docker can already make requests to the outside world. The port mapping is a runtime constraint. So, it only happens when we run/start a container
+
+`docker run -p <route incoming requests to this port on local host to>:<the port inside the container> <image id>`
+
+`docker run -p 8080:8080 <image id>`
