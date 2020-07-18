@@ -116,5 +116,5 @@ coming from the browser to the container. E.g below we map 8080 to 8080. The pre
 `docker run -p <route incoming requests to this port on local host to>:<the port inside the container> <image id>`
 
 `docker run -p 5000:8080 <image id>`
-i.e
-`docker run -p <port from browser>:<port of app running in container> <image id>`
+i.e/e.g
+`docker run -p <port from browser>:<port of  node app running in container> <image id>`
