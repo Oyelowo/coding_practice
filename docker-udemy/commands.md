@@ -139,3 +139,40 @@ coming from the browser to the container. E.g below we map 8080 to 8080. The pre
 `docker run -p 5000:8080 <image id>`
 i.e/e.g
 `docker run -p <port from browser>:<port of  node app running in container> <image id>`
+
+
+# Cache busting and rebuilds
+When you do `COPY ./ ./` and `RUN npm install` after that, everytime you build the image, `npm install` will be run which will cause reinstallation
+of packages even though nothing has changed in the `package.json` file.
+e.g
+
+BEFORE
+```
+FROM node:alpine
+
+WORKDIR /usr
+
+COPY ./ ./
+
+RUN npm install
+
+CMD ["npm", "start"]
+
+```
+
+AFTER
+```
+FROM node:alpine
+
+WORKDIR /usr/app
+
+# We broke the Copy step into two. We first copy package.json which will make it cache better. If we don't change the file, the cache will remain valid and we dont have to reinstall everything again
+COPY ./package.json ./  
+RUN npm install
+
+# We then copy other files. Therefore, when we make changes to only our source code and not `package.json`, `npm install` won't be rerun everytime we rebuild the image
+COPY ./ ./
+
+CMD ["npm", "start"]
+```
+
