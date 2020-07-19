@@ -1,3 +1,9 @@
+# WHY 
+Docker compose is meant for configuring and running multiple containers without
+doing everything via docker-cli. Makes it easy. Rather than writing everything in script
+
+NOTE: docker-compose commands should be run from the directory where the docker-compose.yml lives.
+This is to let it know which services to run
 # launch 
 `docker-compose up`
 
