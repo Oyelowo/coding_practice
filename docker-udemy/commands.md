@@ -52,7 +52,8 @@ goto the second terminal and execute `ls`. You will see that the file created in
 # if using another file name e.g Dockerfile.dev, you need to use the .f flag
 `docker build -f Dockerfile.dev .`
 
-
+NB: since npm install will be run in docker container, one needs to delete local node_module
+folder to prevent copying that also into docker container directory
 
 # Dockerfile - Making custom image
 has some files in it which specifies how our program behaves.
@@ -175,4 +176,61 @@ COPY ./ ./
 
 CMD ["npm", "start"]
 ```
-To test this, build the image and you will notice that `npm install` is run the first time. Then make change to source code, e.g `index.js` and rebuild the image, you will notice that `npm install` in not rerun this time around as it returns from the cache while the latter is rerun
+To test this, build the image and you will notice that `npm install` is run the first time. Then make change to source code, e.g `index.js` and rebuild the image, you will notice that `npm install` in not rerun this time around as it returns from the cache while the latter is 
+
+
+.........
+IF React App Exits Immediately with Docker Run Command
+3-22-2020
+
+Due to a recent update in the Create React App library, we will need to change how we start our containers.
+
+In the upcoming lecture, you'll need to add the -it flag to run the container in interactive mode:
+
+docker run -it -p 3000:3000 CONTAINER_ID
+..........
+
+
+
+
+# DOCKER VOLUMES
+When you copy files statically from local directory into the docker container,
+any change made e.g in a react app during the development wont reflect in the container
+until you rebuild to recopy the files. This is where volume comes in. Volume is used in
+the docker container/file to create a reference that will point back to the local machine 
+and give us access to the files and folder into the local machine. It is similar to 
+port mapping which maps a port inside the container to outside the container.
+
+e,g in the below does not have volume and won't reflect the changes made in the code base until rebuild
+```
+FROM node:alpine
+
+WORKDIR /app
+
+COPY package.json .
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "start"]
+```
+
+Volume is not used for port mapping because it is more difficult to deal with.
+
+
+So, instead of just `docker run -it -p 3000:3000 <image id>`
+you would have to run:
+`docker run -it -p 3000:3000 -v /app/node_modules -v$(pwd):/app <image id>`
+
+where:
+`-v /app/node_modules`  - put a bookmark on the node_modules folder. With this, we are telling
+the container not to map this folder in the container to our local folder, instead keep the node_module
+folder already installed and existing in the /app directory in the container and not overwrite it.
+You also notice that we are not using the colon `:` as we are in the below with `-v$(pwd):/app`. This is because we are not
+doing any mapping or referencing for that folder, rather, we are bookmarking it.
+
+`-v$(pwd):/app` Map the pwd ito the '/app' folder
+
+NB: the automatic changes reflecting on the UI without manually refreshing when we make changes to our code
+is done by create-react-app's hot module reloading. This changes are merely propagated
+to our container
