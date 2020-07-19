@@ -1,0 +1,12 @@
+FROM node:alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+
+RUN npm install
+
+# not strictly necessary for dev since files in .:/app dir in the container are being open up live but this is left for reference forr future purpose or when I need to use this file for prod version
+COPY . . 
+
+CMD [ "npm", "run", "start" ]
