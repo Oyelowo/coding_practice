@@ -3,7 +3,7 @@ services:
     redis-server:
         image: 'redis'
     node-app:
-        restart: on-failure # when no, it has to be string i.e 'no'
+        restart: on-failure # when no, it has to be string i.e 'no' because no is interpreted as false in yml file
         build: .
         ports: 
             - "4001:8081"
