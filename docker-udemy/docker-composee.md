@@ -35,7 +35,9 @@ in `process.exit(0)`,
 'no' - never restart. NB: for 'no' policy, it has to be surrounded by the quote  because no is interpreted as false in yml file
 - always: restart always if container stops. Good for web-service that we want available everytime
 
-- on-failure: when container stops with error code. i.e other than 0. Other numbers (1 upwards) means error. Maybe good for worker process
+- on-failure: when container stops with error code. i.e other than 0. Other numbers (1 upwards) means error. Maybe good for worker process. E.g when a container is processing a file, you probably want to only restart if the process fails and not restart even when the
+process is done
+
 In this case, if you `process.exit(0)`, the container won't restart because status 0 means everything is okay, we only
 exited because we wanted to. but with `process.exit(1)` or any other number than 0, this restart policy
 will restart the container involved because status code other than 0 indicates failure(e.g 1,2,3 or 4)
