@@ -234,3 +234,18 @@ doing any mapping or referencing for that folder, rather, we are bookmarking it.
 NB: the automatic changes reflecting on the UI without manually refreshing when we make changes to our code
 is done by create-react-app's hot module reloading. This changes are merely propagated
 to our container
+
+### VOLUME IN DOCKER-COMPOSE
+```
+version: '3'
+services: 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes: 
+      - /app/node_modules # node_modules bookmark equivalent with docker-compose
+      - .:/app  # docker-compose version of present working directory mapping to app directory in the container
+```

@@ -75,5 +75,18 @@ services:
             - "4001:8081"
 ```
 
+# Building a docker files with other names and Volumes in docker-compose
 
-## DEALING WITH CONTAINERS THAT CRASH, RESTARTING A CONTAINER
+```
+version: '3'
+services: 
+  web:
+    build:
+      context: . # from what working directory you should check the dockerfile. `.` means pwd. Could also be react/folder/to/dockerfile
+      dockerfile: Dockerfile.dev  #  the name of the docker file
+    ports:
+      - "3000:3000"
+    volumes: 
+      - /app/node_modules # node_modules bookmark equivalent with docker-compose
+      - .:/app  # docker-compose version of present working directory mapping to app directory in the container
+```
