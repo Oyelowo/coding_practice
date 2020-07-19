@@ -11,14 +11,14 @@ const client = redis.createClient({
 client.set("visits", 0);
 
 app.get("/", (req, res) => {
-  process.exit(0);
+  //process.exit(0);
 
   client.get("visits", (err, visits) => {
-    res.send("Number of visitis is " + visits);
+    res.send("Number of visits is " + visits);
     client.set("visits", Number(visits) + 1);
   });
 });
 
 app.listen(8081, () => {
-  console.log("listening on port 80801");
+  console.log("listening on port 8081");
 });
