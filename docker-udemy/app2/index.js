@@ -11,7 +11,7 @@ const client = redis.createClient({
 client.set("visits", 0);
 
 app.get("/", (req, res) => {
-  process.exit(1);
+  // process.exit(1);
 
   client.get("visits", (err, visits) => {
     res.send("Number of visits is " + visits);
