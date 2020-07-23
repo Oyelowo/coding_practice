@@ -291,6 +291,54 @@ services:
     command: ["npm", "test"]
 ```
 
+
+## MULTIPLE STEPS DOCKER BUILD
+You can refer to earlier block by using name alias or the index number
+- First option
+```
+# Block 1
+# image alias
+FROM node:alpine as builder
+WORKDIR /app
+COPY ./package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+#/app/build will now have all the static files
+
+
+# Block 2
+# This terminates the previous block
+FROM nginx
+EXPOSE 80
+# Here, we use the alias - builder to refer to the earlier block
+COPY --from=builder /app/build /usr/share/nginx/html
+```
+
+- Second Option
+```
+FROM node:alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+
+FROM nginx
+EXPOSE 80
+# Here, we use 0 to refer to the earlier block since it is not aliased
+COPY --from=0 /app/build /usr/share/nginx/html
+```
+
+
+
+
 It can also be run by executing `npm test` command in the presently running web service container. With this we can also type into the command line(STDIN) to interact with the test runner(e.g jest)
 
 `docker exec -it <container ID> npm run test`
@@ -318,7 +366,11 @@ FROM nginx
 # otherwise, things wont work when we deploy our app because 
 # we always need to give docker info about port mapping i.e something like
 # docker run -p <port from outside>:<port in our container> (e.g docker run -p elasticBS-PORT:80)
+# NB: nginx uses port 80 by default for our prod app
 EXPOSE 80
 COPY --from=builder /app/build /usr/share/nginx/html
 
 ```
+
+
+
