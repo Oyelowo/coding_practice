@@ -249,3 +249,48 @@ services:
       - /app/node_modules # node_modules bookmark equivalent with docker-compose
       - .:/app  # docker-compose version of present working directory mapping to app directory in the container
 ```
+
+## Dockerfile.dev looks like this
+```
+FROM node:alpine
+
+WORKDIR /app
+
+COPY package.json .
+RUN npm install
+
+# This next copy step might not be necessary because we are already  # using volume #in docker-compose and that copies every changes we   # make locally already. However, this is kept in case of necessity. e.# g might decide to stop using docker-compose in the future. So, to  # ensure it continues working, it should be okay to leave this
+COPY . .
+
+CMD ["npm", "run", "start"]
+```
+
+
+### Running tests
+Tests can be run by having it as a service in docker-compose
+```
+version: '3'
+services: 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes: 
+      - /app/node_modules
+      - .:/app
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes: 
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "test"]
+```
+
+It can also be run by executing `npm test` command in the presently running web service container. With this we can also type into the command line(STDIN) to interact with the test runner(e.g jest)
+
+`docker exec -it <container ID> npm run test`
