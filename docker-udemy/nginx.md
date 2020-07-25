@@ -1,4 +1,9 @@
 
+# USES: MULTIPLE NGINX INSTANCES
+- Serve frontend static assets in production
+- Routing from browser to e.g React server and express server.
+  Which means we can have multiple nginx containers responsible for these various tasks.
+
 When we are running our react app locally, it uses the dev server
 which serves static files(html, css, js) to the browser during 
 development. However, the dev server is not available in production environment.
@@ -85,8 +90,23 @@ server {
 
     # If anyone ever comes to `/`, take them to the api upstream
     location /api {
+        # REWRITE DIRECTIVE/RULE
+        # map the regex. This is to remove `/` from the end of `/api/`when it goes through nginx.
+        # This is so that we can use e.g fetch(/api/values) in our react app.
+        # $1 replaces what is in the bracket. So, /api/some-path, becomes, /something.
+        # I.O.W, take off the `/api/` and replace with /$1(the $1) takes from what is in the bracket from the former - `/api/(.*)`
+        # `break`means do not try to apply any other rule aside this 
+        rewrite /api/(.*) /$1 break;
         proxy_pass http://api;
     }
 }
 ```
+NB: Semi colon is important for all at the end
 
+
+
+# CREATE DOCKER FILE THAT CREATE NGINX CUSTOM IMAGE
+We need to copu our nginx conf into that in the nginx image file system.
+If we don't do this, the default settings will take precedence
+
+# ALLOW NGINEX TO ROUTE WEBSOCKET
