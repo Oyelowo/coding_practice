@@ -29,3 +29,23 @@ COPY --from=builder /app/build /usr/share/nginx/html
 # Default command of nginx will start the container for us
 # we don't have to specify the command ourselves
 ```
+
+
+
+
+## ROUTING TO CLIENT SERVER.
+Check nginx.png for more info.
+
+Nginx helps to direct app from browser to the appropriate server.
+i.e react Server or Express server.
+
+Static files (e.g /index.html, /main.js) are routed to React Server
+
+while
+
+Calls to server(e.g /api/values/all, /app/values/current) in our react codebase/app are routed to the express server.
+
+Within Nginx we can just check what the request start with.
+E.g
+If it starts with `/`, route to react server.
+If it starts with `/api`, route to the express server
