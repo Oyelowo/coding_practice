@@ -49,3 +49,18 @@ Within Nginx we can just check what the request start with.
 E.g
 If it starts with `/`, route to react server.
 If it starts with `/api`, route to the express server
+
+In order to create this configuration, we are going to use a file called `default.conf`
+
+
+Upstream server are e.g React and express server in this scenario.
+Express Server watches for traffic on port 5000
+React Server watches for traffic on port 3000
+
+Nginx will try to redirect requests to these ports
+
+- Then tell Nginx it is going to listen on port 80 in the container. This port exposed can be changed and we can set up port mapping
+
+- If anyone comes to `/`, send them to client upstream
+- if anyone comes to `api`, send them to server upstream
+
