@@ -90,3 +90,17 @@ services:
       - /app/node_modules # node_modules bookmark equivalent with docker-compose
       - .:/app  # docker-compose version of present working directory mapping to app directory in the container
 ```
+
+
+# ENVIRONMENT VARIABLES
+
+##  option 1
+`variableName=value`
+Sets a variable in the container at runtime.
+
+## option 2
+`variableName`
+Sets a variable in the container at runtime.
+NB: Value is taken from your computer.
+
+You can also specify the env file name where the environment variables are stated
