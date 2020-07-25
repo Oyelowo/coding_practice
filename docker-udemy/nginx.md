@@ -64,3 +64,29 @@ Nginx will try to redirect requests to these ports
 - If anyone comes to `/`, send them to client upstream
 - if anyone comes to `api`, send them to server upstream
 
+in nginx/default.conf
+```
+upstream client {
+    server client:3000;
+}
+
+upstream api {
+    server api:5000;
+}
+
+server {
+    # Expose port at 80
+    listen 80;
+
+    # If anyone ever comes to `/`, take them to the client upstream
+    location / {
+        proxy_pass http://client;
+    }
+
+    # If anyone ever comes to `/`, take them to the api upstream
+    location /api {
+        proxy_pass http://api;
+    }
+}
+```
+
