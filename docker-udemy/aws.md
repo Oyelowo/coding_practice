@@ -228,3 +228,7 @@ various AWS services as thus:
  elastic beanstalk
 - AWS Relational Database Service(RDS) - hosts postgres. Can be used with any other applications and not just
  elastic beanstalk
+
+ We can and will also set these services on our own and wire them on Elastic Beanstalk
+ because you might decide you want to handle these on your own and some cloud providers 
+ like digital ocean don't have managed instances of Redis and Postgres.
