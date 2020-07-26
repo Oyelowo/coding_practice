@@ -220,5 +220,11 @@ from aws instead using the `Dockerrun.aws.json` file to configure things. Herein
 various AWS services as thus:
 
 - Elastic Beanstalk instance - hosts Express server, React static files packaged in nginx and worker service
-- AWS Elastic Cache - hosts Redis service
-- AWS Relational Database Service(RDS) - hosts postgres
+  
+  Some General Services. These are used rather than hosting our own container with these services on EBS because
+  they automatically create and maintain redis instances and easy to scale. Also provide logging and maintenance with better security
+  and easy to migrate off of EB since they can be accessed from anywhere. For RDS, they also provide automated backups and rollbacks
+- AWS Elastic Cache - hosts Redis service. Can be used with any other applications and not just
+ elastic beanstalk
+- AWS Relational Database Service(RDS) - hosts postgres. Can be used with any other applications and not just
+ elastic beanstalk
