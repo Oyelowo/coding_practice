@@ -204,3 +204,10 @@ git push origin master
 6. It should say "Elastic Beanstalk is updating your environment"
 
 7. It should eventually show a green checkmark under "Health". You will now be able to access your application at the external URL provided under the environment name.
+
+
+# TASK DEFINITIONS
+Elastic Beanstalk EB doesn't really know what to do with the docker image we deployed to dockerhub
+Hence, we will be using ECS' task definitions - which is similar to docker-compose.yml - to tell
+AWS what image to run and also things like memory allocations to the various services.
+More information can be gotten from AWS' `container definitions` under `task definitions`
