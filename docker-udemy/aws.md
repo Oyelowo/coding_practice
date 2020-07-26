@@ -211,3 +211,14 @@ Elastic Beanstalk EB doesn't really know what to do with the docker image we dep
 Hence, we will be using ECS' task definitions - which is similar to docker-compose.yml - to tell
 AWS what image to run and also things like memory allocations to the various services.
 More information can be gotten from AWS' `container definitions` under `task definitions`
+
+
+
+# PRODUCTION DEPLOYMENT ON AWS.
+Rather than deploying our docker images directly on aws, we deploy to docker hub and run those 
+from aws instead using the `Dockerrun.aws.json` file to configure things. Herein, various services are hosted on 
+various AWS services as thus:
+
+- Elastic Beanstalk instance - hosts Express server, React static files packaged in nginx and worker service
+- AWS Elastic Cache - hosts Redis service
+- AWS Relational Database Service(RDS) - hosts postgres
