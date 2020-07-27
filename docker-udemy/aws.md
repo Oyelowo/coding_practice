@@ -212,7 +212,40 @@ Hence, we will be using ECS' task definitions - which is similar to docker-compo
 AWS what image to run and also things like memory allocations to the various services.
 More information can be gotten from AWS' `container definitions` under `task definitions`
 
+```
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "client",
+      "image": "oyelowo/multi-client",
+      "hostname": "client",
+      "essential": false
+    },
+    {
+      "name": "server",
+      "image": "oyelowo/multi-server",
+      "hostname": "api",
+      "essential": false
+    },
+    {
+      "name": "worker",
+      "image": "oyelowo/multi-worker",
+      "hostname": "worker",
+      "essential": false
+    },
+    {
+      "name": "nginx",
+      "image": "oyelowo/multi-nginx",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [{ "hostPort": 80, "containerPort": 80 }],
+      "links": ["client", "server"]
+    }
+  ]
+}
 
+```
 
 # PRODUCTION DEPLOYMENT ON AWS.
 Rather than deploying our docker images directly on aws, we deploy to docker hub and run those 
@@ -232,3 +265,11 @@ various AWS services as thus:
  We can and will also set these services on our own and wire them on Elastic Beanstalk
  because you might decide you want to handle these on your own and some cloud providers 
  like digital ocean don't have managed instances of Redis and Postgres.
+
+
+# VIRTUAL PRIVATE CLOUD (VPC)
+Any instance you create here is isolated to your account and not shared to the world. You have one default VPC per region.
+Herein, you can have e.g your EB instance, RDS (Postgres) and EC (Redis)
+
+# SECURITY GROUP (FIREWALL RULES)
+If any service belongs to this security group, let the traffic flow through
