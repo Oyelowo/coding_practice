@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1 # Numbers of pods that should be created
+  selector: # similar to selector property in services selector. Master creates the pod, but deployment uses the selector to get hold of the pod created
+    matchLabels:
+      component: web
+  template: # Defines configuration that should be used for every pod
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+      - name: client
+        image: stephengrider/multi-worker
+        ports:
+        - containerPort: 3000

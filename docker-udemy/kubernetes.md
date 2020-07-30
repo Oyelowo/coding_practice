@@ -1,10 +1,11 @@
-# Pods
+## Object Types
+- __Pods__
 A Pod can contain one or more containers that are tightly coupled and depend on one another. I.O.W, runs one or more closely related containers E.g a database, it's logger and back-up manager.
 Without the db, the logger and back-up manager would be useless. So, these
 containers with these apps can be good candidate for a pod.
 
-# Services
-Sets up networking in a kubernetes Cluster. You need to set up service if you want to access the pods
+- __Services__
+Sets up networking in a kubernetes Cluster. You need to set up service if you want to access the pods. One reason is, everytime we spin up a pod, new ip address is assigned and it's cumbersome to have to manually get the new ip address to access the pod, so, rather than doing that directly, services is responsible for this.
 They include:
 - ClusterIP
   
@@ -15,7 +16,17 @@ They include:
   
 - Ingress
 
+- __Deployment__
+  It's similar to a pod. Maintains a set of identical pods, ensuring that they have the correct config and that the right number exists
 
+
+## Pods Vs Deployment
+- Pods a basic way of running kubernetes to run a single set of containers
+   Deployment runs a set of identical ods (one or more)
+- Pods is good for one-off dev purposes
+   Deployment monitors the state of each pod, updating as necessary
+- Pods rarely used directly in production
+   Deployment is good for dev and for production
 
 # Linking different components
 You use selector in one to refer to the label in another. The selector does not have to be called component.
@@ -79,8 +90,8 @@ kubectl apply -f <filename>
 
 - Get the status of all running pods
   `kubectl get pods`
-- Get the status of all running pods
-  `kubectl get pods`
+- Get the status of all running pods with more info
+  `kubectl get pods -o wide`
 
 - Get the status of all running services
   `kubectl get services`
@@ -104,3 +115,26 @@ In declarative approach, rather than writing commands to check the pods and what
 E.g
 if we change the image in an object, the master can check the name and the kind and based on that determine if it needs to update a pod on a node(virtual machine) or spin up a new one. `name` and `kind` are the identifying fields and changing this will spin up a new po.
 So, if you want to update an object, you need to leave the name and kind as the same
+
+## GETTING DETAILED INFO ABOUT AN OBJECT
+`kubectl describe <object type> <object name(optional)>`
+e.g `kubectl describe pod client-pod`
+
+# REMOVING AND OBJECT (Imperative update)
+`kubectl delete -f <config file>`
+
+# GET STATUS OF DEPLOYMENT OBJECT
+`kubectl get deployments`
+
+## RESTART POD WHEN IMAGE UPDATED
+`kubectl rollout restart -f client-deployment.yaml`
+
+## RECONFIGURE DOCKER FOR DESKTOP IN THE CURRENT TERMINAL TEMPORARILY TO ENABLE DOCKER CONNECT TO DOCKER IN KUBERNETES VM(NODE)
+`eval $(minikube docker-env)`
+after this, you can do `docker ps` in the same terminal.
+
+With this, you can inspect containers in Kubernetes VM(node) using existing knowledge of docker commands - docker cli.  With this, you can also `docker system prune` if there seems to be a caching issue in the containers in kubernetes
+NB: A lot of these commands are also available to kubectl
+e.g
+`kubectl logs <pod tag>`
+`kubectl exec -it <pod tag>` sh
