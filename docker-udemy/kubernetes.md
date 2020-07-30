@@ -142,6 +142,7 @@ e.g
 
 
 ## PVC (Persistent Volume Claim.)
+`kubectl get pvc`
 
 _More notes_
 Same as in docker-compose/docker's volume to share the host machine's operating system with the filesystem in the container. 
@@ -154,6 +155,7 @@ With PVC, we can have a persistent filesystem that can be accessed by postgres b
 So, if a pod with postgres crashes, we still link the volume on our machine with the newly created container in a new pod.
 
 ## Persistent Volume
+`kubectl get pv`
 
 ## Volume
 Not exactly the same thing as a docker volume.
@@ -172,5 +174,35 @@ So, kubernetes volume is not good for databases.
 Kubernetes Volume is tied to the lifecycle of a pod. PVC is tied to a lasting persistent data source which can still be accessed even  if a pod crashes.
 
 - __Persistent Volume Claim vs Persistent Volume__
+PVC is the advertised possible storage option while PV is the actual provisioned storage which could be static or dynamic
 
 _Statistically provisioned persistent volume_ is volume that is available for PVC while _Dynamically provisioned persistent volume_  is created on the fly if the requested PVC could not be satisfied by the Dynamically provisioned persistent volume.
+
+
+## Access Modes
+- ReadWriteOnce: Can be used by a single node.
+  
+- ReadOnlyMany: Multiple nodes can read from this
+  
+- ReadWriteMany: Can be read and written to by many nodes
+
+
+## Storage Info
+`kubectl get storageclass`
+`kubectl describe storageclass`
+
+
+## Secrets
+Securely stores a piece of information in the cluster such as database password.
+To create secret imperatively
+`kubectl create secret generic <secret name> --from-literal key=value`
+e.g
+`kubectl create secret generic pgpassword --from-literal PGPASSWORD=pass12345`
+
+
+
+`kubectl create secret docker-registry` - for docker stuff
+`kubectl create secret tls`
+
+_To check secrets_:
+`kubectl get secrets`
