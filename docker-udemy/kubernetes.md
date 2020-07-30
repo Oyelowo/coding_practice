@@ -14,8 +14,10 @@ They include:
   Exposes a container/ set of pods to the outside world(only good for dev purposes. Not used for production) and allows us to access the container from inside the browser
 
 - _LoadBalancer_
-  
+  Legacy way of getting network traffic into a cluster. Gives you access to only one set of pods
+
 - _Ingress_
+  Exposes a set of services to the outside world
 
 - __Deployment__
   It's similar to a pod. Maintains a set of identical pods, ensuring that they have the correct config and that the right number exists
