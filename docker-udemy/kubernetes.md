@@ -96,3 +96,11 @@ they are doing the correct thing.
 E.g could check a multi-worker node to check the number of copies it's running, if it is less than what it needs to be running. This does this by polling all the nodes to make sure they're running the right amount of container working. If something fails, it can go to docker-hub to pull the image and run the container.
 
 You don't work directly with node, rather you work with the master.
+
+
+## IMPERATIVE VS DECLARATIVE APPROACH
+
+In declarative approach, rather than writing commands to check the pods and whatnot and tell them how to update based on status, we can just update the config file and pass to `kubectl` which passes that to master and determine what to do.
+E.g
+if we change the image in an object, the master can check the name and the kind and based on that determine if it needs to update a pod on a node(virtual machine) or spin up a new one. `name` and `kind` are the identifying fields and changing this will spin up a new po.
+So, if you want to update an object, you need to leave the name and kind as the same
