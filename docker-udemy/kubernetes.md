@@ -7,14 +7,15 @@ containers with these apps can be good candidate for a pod.
 - __Services__
 Sets up networking in a kubernetes Cluster. You need to set up service if you want to access the pods. One reason is, everytime we spin up a pod, new ip address is assigned and it's cumbersome to have to manually get the new ip address to access the pod, so, rather than doing that directly, services is responsible for this.
 They include:
-- ClusterIP
+- _ClusterIP_
+  Exposes a set of pods to other objects in the cluster. It does not allow traffic from outside world. Just objects within a cluster
   
-- NodePort
-  Exposes a container to the outside world(only good for dev purposes. Not used for production) and allows us to access the container from inside the browser
+- _NodePort_
+  Exposes a container/ set of pods to the outside world(only good for dev purposes. Not used for production) and allows us to access the container from inside the browser
 
-- LoadBalancer
+- _LoadBalancer_
   
-- Ingress
+- _Ingress_
 
 - __Deployment__
   It's similar to a pod. Maintains a set of identical pods, ensuring that they have the correct config and that the right number exists
@@ -138,3 +139,38 @@ NB: A lot of these commands are also available to kubectl
 e.g
 `kubectl logs <pod tag>`
 `kubectl exec -it <pod tag>` sh
+
+
+## PVC (Persistent Volume Claim.)
+
+_More notes_
+Same as in docker-compose/docker's volume to share the host machine's operating system with the filesystem in the container. 
+e.g to make changes in local development reflect in our container.
+
+We use this for postgres in case where a pod crashes and recreates a new pod, no data will be carried over from the deleted pod with postgres, which means we will be losing our data.
+
+With PVC, we can have a persistent filesystem that can be accessed by postgres by having the data in the "Volume" on host machine. So, anytime we write data to the postgres container(in the pod), it is written into the volume.
+
+So, if a pod with postgres crashes, we still link the volume on our machine with the newly created container in a new pod.
+
+## Persistent Volume
+
+## Volume
+Not exactly the same thing as a docker volume.
+We don't want this for data that needs to last.
+- __"Volume" in generic container terminology__
+  some type of mechanism that allows a container to access a filesystm outside itself
+
+- __"Volume" in kubernetes__
+  An object that allows a container to store data at the pod level
+
+We are not using this because the data is tied to a pod. So, even though e.g other postgres containers can access the data within the pod(which means another postgres container e.g can access the same data if one crashes), it is also possible for the entire pod to die/crash/recreated.
+
+So, kubernetes volume is not good for databases.
+
+- __PVC vs KC__
+Kubernetes Volume is tied to the lifecycle of a pod. PVC is tied to a lasting persistent data source which can still be accessed even  if a pod crashes.
+
+- __Persistent Volume Claim vs Persistent Volume__
+
+_Statistically provisioned persistent volume_ is volume that is available for PVC while _Dynamically provisioned persistent volume_  is created on the fly if the requested PVC could not be satisfied by the Dynamically provisioned persistent volume.
