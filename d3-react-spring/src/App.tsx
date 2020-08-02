@@ -3,8 +3,8 @@ import React, { StrictMode, useEffect, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { RecoilRoot } from "recoil";
 import "./App.css";
-import Somethings, { useStuff } from "./recoil/Somethings";
-import LineChart from "./LineChart/LineChart";
+import { useStuff } from "./recoil/Somethings";
+import VoronoiHoverTracker from "./Voronoi/Voronoi";
 
 const App = () => {
   return (
@@ -18,7 +18,8 @@ const App = () => {
             alignItems: "center",
           }}
         >
-       {/*    <SpringPlay />
+          <VoronoiHoverTracker />
+          {/*    <SpringPlay />
           <Somethings /> */}
           {/* <Gesture /> */}
           {/*       <Spring />
@@ -29,7 +30,7 @@ const App = () => {
           <br />
           <br />
           {/* <RandomCompo /> */}
-          <LineChart />
+          {/* <LineChart /> */}
         </div>
       </RecoilRoot>
     </StrictMode>

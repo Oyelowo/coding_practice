@@ -208,3 +208,24 @@ e.g
 
 _To check secrets_:
 `kubectl get secrets`
+
+
+## Controller
+Anything that works to get our app from it's current state to the desired state. Deployment is a type of 'controller'
+
+- __Ingress Controller__
+  A controller that constantly works to make sure these routing rules are setup.
+  It makes sure that all of the rules defined in the Ingress config are applied 
+  by watching for changes to the ingress and updating the thing that handles traffic.
+  _Ingress config_ is an object that has a set of configuration rules describing how
+  traffic should be routed.
+
+Flow could be:
+1. Current state: No routing 
+2. Desired state: Ingress routing rules to get traffic to services
+3. New state: Pod running nginx that handles routing
+
+
+## HELM
+A command that we can use to administer third party program in our software.
+When we install helm, we get hel client and Tiller Server.
