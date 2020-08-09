@@ -60,58 +60,54 @@ const VoronoiHoverTracker = () => {
   const chartHeight = height + margin.top + margin.bottom;
 
   return (
-    <svg
-      width={chartWidth}
-      height={chartHeight}
-      style={{ border: "0.1px solid pink" }}
-      pointerEvents="none"
-    >
-      <g transform={`translate(${margin.left},${margin.top})`}>
-        {data.map((point, i) => {
-          const { x, y, id } = point;
-          return (
-            <g key={id}>
-              <g transform={`translate(${xScale(x)},${yScale(y)})`}>
-                <text fontWeight="100" stroke="#bbb" fontSize="12">
-                  {id}
-                </text>
-                <circle
-                  r={3}
-                  strokeWidth={3}
-                  fill="pink"
-                  stroke={hovered === point ? "green" : "red"}
+    <div style={{ position: "relative" }}>
+      <svg
+        width={chartWidth}
+        height={chartHeight}
+        style={{ border: "0.1px solid pink" }}
+        pointerEvents="none"
+      >
+        <g transform={`translate(${margin.left},${margin.top})`}>
+          {data.map((point, i) => {
+            const { x, y, id } = point;
+            return (
+              <g key={id}>
+                <g transform={`translate(${xScale(x)},${yScale(y)})`}>
+                  <text fontWeight="100" stroke="#bbb" fontSize="12">
+                    {id}
+                  </text>
+                  <circle
+                    r={3}
+                    strokeWidth={3}
+                    fill="pink"
+                    stroke={hovered === point ? "green" : "red"}
+                  />
+                </g>
+
+                <path
+                  opacity={0.5}
+                  fill="none"
+                  stroke="teal"
+                  pointerEvents="all"
+                  d={voronoi.renderCell(i)}
+                  onMouseEnter={() => setHovered(point)}
+                  onMouseLeave={() => setHovered(null)}
                 />
               </g>
-
-              <path
-                opacity={0.5}
-                fill="none"
-                stroke="teal"
-                pointerEvents="all"
-                d={voronoi.renderCell(i)}
-                onMouseEnter={() => setHovered(point)}
-                onMouseLeave={() => setHovered(null)}
-              />
-            </g>
-          );
-        })}
-
-        <motion.g
-          animate={{
-            x: hovered ? xScale(hovered.x) : 0,
-            y: hovered ? yScale(hovered.y) : chartHeight / 2,
-          }}
-          display={!hovered ? "none" : "initial"}
-        >
-          some
-          <foreignObject style={{ height: 200, width: 100 }}>
-            <section style={{ background: "#eaeaea" }}>
-              {hovered?.x}:{hovered?.y}:{hovered?.id}
-            </section>
-          </foreignObject>
-        </motion.g>
-      </g>
-    </svg>
+            );
+          })}
+        </g>
+      </svg>
+      <motion.div
+        animate={{
+          x: hovered ? xScale(hovered.x) : 0,
+          y: hovered ? yScale(hovered.y) : chartHeight / 2,
+        }}
+        style={{ background: "#eaeaea", position: "absolute", top: 0, left: 0 }}
+      >
+        {hovered?.x}:{hovered?.y}:{hovered?.id}lk
+      </motion.div>
+    </div>
   );
 };
 

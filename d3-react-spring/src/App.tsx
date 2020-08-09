@@ -5,6 +5,7 @@ import { RecoilRoot } from "recoil";
 import "./App.css";
 import { useStuff } from "./recoil/Somethings";
 import VoronoiHoverTracker from "./Voronoi/Voronoi";
+import {motion} from 'framer-motion'
 
 const App = () => {
   return (
