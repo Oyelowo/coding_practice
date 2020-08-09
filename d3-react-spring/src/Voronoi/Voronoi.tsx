@@ -66,7 +66,10 @@ const VoronoiHoverTracker = () => {
       style={{ border: "0.1px solid pink" }}
       pointerEvents="none"
     >
-      <g transform={`translate(${margin.left},${margin.top})`}>
+      <g
+        transform={`translate(${margin.left},${margin.top})`}
+        onMouseLeave={() => setHovered(null)}
+      >
         {data.map((point, i) => {
           const { x, y, id } = point;
           return (
@@ -90,24 +93,26 @@ const VoronoiHoverTracker = () => {
                 pointerEvents="all"
                 d={voronoi.renderCell(i)}
                 onMouseEnter={() => setHovered(point)}
-                onMouseLeave={() => setHovered(null)}
+                //onMouseLeave={() => setHovered(null)}
               />
             </g>
           );
         })}
 
-        <motion.foreignObject
-          animate={{
-            x: hovered ? xScale(hovered.x) : 0,
-            y: hovered ? yScale(hovered.y) : chartHeight / 2,
-          }}
-          display={!hovered ? "none" : "initial"}
-          style={{ height: 200, width: 100 }}
-        >
-          <section style={{ background: "#eaeaea" }}>
-            {hovered?.x}:{hovered?.y}:{hovered?.id}
-          </section>
-        </motion.foreignObject>
+        {hovered && (
+          <motion.foreignObject
+            initial={false}
+            animate={{
+              x: xScale(hovered.x),
+              y: yScale(hovered.y),
+            }}
+            style={{ height: 200, width: 100 }}
+          >
+            <section style={{ background: "#eaeaea" }}>
+              {hovered?.x}:{hovered?.y}:{hovered?.id}
+            </section>
+          </motion.foreignObject>
+        )}
       </g>
     </svg>
   );
