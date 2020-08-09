@@ -1,12 +1,12 @@
 import * as d3 from "d3";
-import { eachDayOfInterval } from "date-fns";
-import React from "react";
-import styled from 'styled-components';
-
+import { eachDayOfInterval, subDays } from "date-fns";
+import { motion } from "framer-motion";
+import React, { useState } from "react";
+import styled from "styled-components";
 
 const Tooltip = styled.foreignObject({
   x: 3,
-})
+});
 
 const data = [
   {
@@ -45,7 +45,7 @@ const data = [
     score: 63,
     date: "2020-03-08",
   },
-];
+].map((el) => ({ ...el, date: new Date(el.date) }));
 
 type CoolDatum = typeof data[number];
 
@@ -78,13 +78,15 @@ const result = eachDayOfInterval({
 });
 
 const LineChart = () => {
+  const [hovered, setHovered] = useState<typeof data[number] | null>();
   const [minY, maxY] = d3.extent(data, (d) => d.score) as [number, number];
   const [minX, maxX] = [new Date("2020-02-29"), new Date("2020-03-08")];
 
   const yScale = d3
     .scaleLinear()
     .domain([0, maxY])
-    .range([chartAreaProps.HEIGHT, 0]).nice();
+    .range([chartAreaProps.HEIGHT, 0])
+    .nice();
 
   const xScale = d3
     .scaleTime()
@@ -97,13 +99,33 @@ const LineChart = () => {
     .y((d) => yScale(d.score))
     .x((d) => xScale(new Date(d.date)));
 
+  const [, end] = xScale.domain();
+  const [, endRange] = xScale.range();
+  const barWidth = xScale(end) - xScale(subDays(end, 1));
+  // console.log(end, endRange, barWidth);
+
+  const x2 = xScale(new Date(data[2].date)) - xScale(new Date(data[1].date));
+  const bb = chartAreaProps.WIDTH / data.length;
+  // console.log("bb", x2);
+  console.log(
+    "hovered",
+    hovered,
+    hovered && xScale(hovered.date),
+    hovered && yScale(hovered.score)
+  );
   return (
     <svg
       width={svgProps.WIDTH}
       height={svgProps.HEIGHT}
       style={{ background: "", border: "1px solid #eff" }}
+      pointerEvents="none"
     >
-      <g transform={`translate(${margins.LEFT}, ${margins.TOP})`}>
+      <g
+        transform={`translate(${margins.LEFT}, ${margins.TOP})`}
+        width={chartAreaProps.WIDTH}
+        height={chartAreaProps.HEIGHT}
+        onMouseLeave={()=>setHovered(null) }
+      >
         {/* Char Area Bounding Box */}
         {/*         <rect
           width={chartAreaProps.WIDTH}
@@ -116,28 +138,64 @@ const LineChart = () => {
         <path
           d={line(data) ?? ""}
           fill="none"
-          stroke="#8b95e1"
+          stroke="#2c6e35"
           strokeWidth="2.5"
         />
 
         {/* Data points */}
-        {data.map((el) => {
+        {data.map((el, i) => {
           return (
-            <circle
-              cx={xScale(new Date(el.date))}
-              cy={yScale(new Date(el.score))}
-              r={5}
-              fill="#fff"
-              stroke="#8b95e1"
-            />
+            <g key={i}>
+              <g>
+                <circle
+                  cx={xScale(el.date)}
+                  cy={yScale(el.score)}
+                  r={5}
+                  fill="#fff"
+                  stroke="#8b95e1"
+                />
+              </g>
+              <g transform={`translate(-${barWidth / 2}, 0)`}>
+                <rect
+                  /* transform={`translate(${
+                  (chartAreaProps.WIDTH / data.length) * i -
+                  chartAreaProps.WIDTH / data.length / 2
+                }, ${0})`} */
+                  x={xScale(el.date)}
+                  y={0}
+                  width={barWidth}
+                  height={chartAreaProps.HEIGHT}
+                  fill="none"
+                  stroke="none"
+                  pointerEvents="all"
+                  onMouseEnter={() => setHovered(el)}
+                /*   onMouseLeave={() => {
+                    setTimeout(() => {
+                      setHovered((cu) => (cu === el ? null : cu));
+                    }, 100);
+                  }} */
+                />
+              </g>
+            </g>
           );
         })}
 
-<foreignObject  />
+        <motion.foreignObject
+          animate={{
+            x: hovered ? xScale(hovered.date) : 0,
+            y: hovered ? yScale(hovered.score) : 0,
+          }}
+          display={!hovered ? "none" : "initial"}
+          style={{ height: 200, width: 100 }}
+        >
+          <section style={{ background: "red" }}>{hovered?.score}kkk</section>
+        </motion.foreignObject>
+
+        <foreignObject />
         {/* Grid Lines */}
         {[0, 25, 50, 75, 100, 125].map((score) => {
           return (
-            <>
+            <g key={score}>
               <line
                 x1={0}
                 x2={chartAreaProps.WIDTH}
@@ -158,27 +216,26 @@ const LineChart = () => {
               >
                 {score > 100 ? null : score}
               </text>
-            </>
+            </g>
           );
         })}
 
         {/* X-Axis label */}
         <g transform={`translate(0, ${chartAreaProps.HEIGHT})`}>
-          {result.map((date) => {
+          {result.map((date, i) => {
             return (
-              <>
-                <text
-                  x={xScale(date)}
-                  y={0}
-                  strokeWidth="1"
-                  fontSize="12"
-                  fontWeight="100"
-                  stroke="#bbb"
-                  transform={`translate(0, ${30})`}
-                >
-                  {padDateWithZero(date.getDate().toLocaleString())}
-                </text>
-              </>
+              <text
+                key={i}
+                x={xScale(date)}
+                y={0}
+                strokeWidth="1"
+                fontSize="12"
+                fontWeight="100"
+                stroke="#bbb"
+                transform={`translate(0, ${30})`}
+              >
+                {padDateWithZero(date.getDate().toLocaleString())}
+              </text>
             );
           })}
 
@@ -190,7 +247,7 @@ const LineChart = () => {
             new Date("2020-03-08"),
           ].map((highlight, i) => {
             return (
-              <>
+              <g key={i}>
                 <line
                   x1={xScale(highlight) - 12}
                   x2={xScale(highlight) + 12}
@@ -204,7 +261,7 @@ const LineChart = () => {
                 >
                   {i === 0 ? "Feb" : i === 1 ? "Mar" : null}
                 </text>
-              </>
+              </g>
             );
           })}
         </g>

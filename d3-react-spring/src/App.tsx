@@ -3,16 +3,15 @@ import React, { StrictMode, useEffect, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { RecoilRoot } from "recoil";
 import "./App.css";
+import LineChart from "./LineChart/LineChart";
 import { useStuff } from "./recoil/Somethings";
 import VoronoiHoverTracker from "./Voronoi/Voronoi";
-import {motion} from 'framer-motion'
 
 const App = () => {
   return (
     <StrictMode>
       <RecoilRoot>
         <div
-
           className=""
           style={{
             display: "grid",
@@ -33,7 +32,7 @@ const App = () => {
           <br />
           <br />
           {/* <RandomCompo /> */}
-          {/* <LineChart /> */}
+          <LineChart />
         </div>
       </RecoilRoot>
     </StrictMode>
@@ -70,7 +69,6 @@ export const SpringPlay = () => {
       <path
         d={String(p)}
         strokeDashoffset={stroke.someX.interpolate((val) => {
-
           return val.toFixed(0);
         })}
         strokeDasharray={400}

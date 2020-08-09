@@ -96,20 +96,18 @@ const VoronoiHoverTracker = () => {
           );
         })}
 
-        <motion.g
+        <motion.foreignObject
           animate={{
             x: hovered ? xScale(hovered.x) : 0,
             y: hovered ? yScale(hovered.y) : chartHeight / 2,
           }}
           display={!hovered ? "none" : "initial"}
+          style={{ height: 200, width: 100 }}
         >
-          some
-          <foreignObject style={{ height: 200, width: 100 }}>
-            <section style={{ background: "#eaeaea" }}>
-              {hovered?.x}:{hovered?.y}:{hovered?.id}
-            </section>
-          </foreignObject>
-        </motion.g>
+          <section style={{ background: "#eaeaea" }}>
+            {hovered?.x}:{hovered?.y}:{hovered?.id}
+          </section>
+        </motion.foreignObject>
       </g>
     </svg>
   );
@@ -153,6 +151,7 @@ export default VoronoiHoverTracker;
         currentDatum === {x,y,category} ? null : currentDatum
       );
     }}
+    // This wont work. Should be all
     pointerEvents="visibleStroke"
     onClick={() => console.log("erer")}
   />
