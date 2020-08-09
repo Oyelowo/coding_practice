@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { Delaunay } from "d3-delaunay";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 interface Datum {
   category: string;
@@ -30,21 +30,32 @@ const VoronoiHoverTracker = () => {
   const [hoveredDatum, setHoveredDatum] = useState<Datum | null>(null);
   // const [hoveredX, setHoveredX] = useState<number | null>(null);
   // const [hoveredY, setHoveredY] = useState<number | null>(null);
-  const yScale = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (d) => d.y) as [number, number])
-    .range([height, 0]);
+  const yScale = useMemo(
+    () =>
+      d3
+        .scaleLinear()
+        .domain(d3.extent(data, (d) => d.y) as [number, number])
+        .range([height, 0]),
+    []
+  );
 
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (d) => d.x) as [number, number])
-    .range([0, width]);
+  const xScale = useMemo(
+    () =>
+      d3
+        .scaleLinear()
+        .domain(d3.extent(data, (d) => d.x) as [number, number])
+        .range([0, width]),
+    []
+  );
 
-  const points = data.map(({ x, y }) => [xScale(x), yScale(y)]);
-  const delaunay = Delaunay.from(points);
-  const voronoi = delaunay.voronoi([0, 0, width - 0.5, height - 0.5]);
+  const points = useMemo(() => data.map(({ x, y }) => [xScale(x), yScale(y)]), [
+    xScale,
+    yScale,
+  ]);
+  const delaunay = useMemo(() => Delaunay.from(points), []);
+  const voronoi = useMemo(() => delaunay.voronoi([0, 0, width, height]), []);
 
-  console.log(hoveredDatum);
+  //console.log(hoveredDatum);
   //const handleHovered = useMemo(() => (v: Datum) => setHovered(v), []);
   return (
     <svg
@@ -58,14 +69,17 @@ const VoronoiHoverTracker = () => {
           x={hoveredDatum?.x ? 2 + xScale(hoveredDatum.x) : undefined}
           y={hoveredDatum?.y ? 6 + yScale(hoveredDatum.y) : undefined}
           fontWeight="100"
-          stroke="red"
+          stroke="green"
           fontSize="12"
+          style={{ pointerEvents: "none" }}
         >
           {hoveredDatum?.x}
           {hoveredDatum?.y}
           {hoveredDatum?.category}
         </text>
-        {data.map(({ x, y }, i) => {
+
+        {data.map((h, i) => {
+          const { x, y } = h;
           return (
             <g key={i} pointerEvents="none">
               <text
@@ -82,28 +96,38 @@ const VoronoiHoverTracker = () => {
                 cx={xScale(x)}
                 cy={yScale(y)}
                 r={3}
-                stroke="red"
+                stroke={hoveredDatum == h ? "green" : "red"}
                 pointerEvents="none"
               />
 
-              {data.map(({ x, y, category }, i) => (
-                <path
-                  d={voronoi.renderCell(i)}
-                  stroke="#fff"
-                  strokeWidth="2"
-                  fill={`none`}
-                  onMouseOver={() => {
-                    setHoveredDatum({ x, y, category });
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredDatum((currentDatum) =>
-                      currentDatum === { x, y, category } ? null : currentDatum
-                    );
-                  }}
-                  pointerEvents="visibleStroke"
-                  onClick={() => console.log("erer")}
-                />
-              ))}
+              {data.map((d, i) => {
+                const { x, y, category } = d;
+                return (
+                  <path
+                    key={x}
+                    d={voronoi.renderCell(i)}
+                    stroke="#fff"
+                    // style={{pointerEvents: 'none'}}
+                    strokeWidth="2"
+                    fill={`none`}
+                    onMouseOver={() => {
+                      console.log("happening, d", d);
+                      setHoveredDatum(d);
+                    }}
+                    onMouseOut={() => {
+                      /*     setTimeout(() => {
+                        setHoveredDatum((currentDatum) => {
+                          console.log("currentDatum", currentDatum);
+                          console.log("d", d);
+                          return currentDatum === d ? currentDatum : null;
+                        });
+                    }, 100); */
+                    }}
+                    style={{ pointerEvents: "auto", cursor: "pointer" }}
+                    onClick={() => console.log("erer")}
+                  />
+                );
+              })}
             </g>
           );
         })}

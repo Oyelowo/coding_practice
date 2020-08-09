@@ -11,6 +11,7 @@ const App = () => {
     <StrictMode>
       <RecoilRoot>
         <div
+
           className=""
           style={{
             display: "grid",
@@ -18,6 +19,7 @@ const App = () => {
             alignItems: "center",
           }}
         >
+          <h1>this</h1>
           <VoronoiHoverTracker />
           {/*    <SpringPlay />
           <Somethings /> */}
