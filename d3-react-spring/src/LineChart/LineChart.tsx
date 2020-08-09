@@ -124,7 +124,7 @@ const LineChart = () => {
         transform={`translate(${margins.LEFT}, ${margins.TOP})`}
         width={chartAreaProps.WIDTH}
         height={chartAreaProps.HEIGHT}
-        onMouseLeave={()=>setHovered(null) }
+        onMouseLeave={() => setHovered(null)}
       >
         {/* Char Area Bounding Box */}
         {/*         <rect
@@ -169,7 +169,7 @@ const LineChart = () => {
                   stroke="none"
                   pointerEvents="all"
                   onMouseEnter={() => setHovered(el)}
-                /*   onMouseLeave={() => {
+                  /*   onMouseLeave={() => {
                     setTimeout(() => {
                       setHovered((cu) => (cu === el ? null : cu));
                     }, 100);
@@ -180,16 +180,18 @@ const LineChart = () => {
           );
         })}
 
-        <motion.foreignObject
-          animate={{
-            x: hovered ? xScale(hovered.date) : 0,
-            y: hovered ? yScale(hovered.score) : 0,
-          }}
-          display={!hovered ? "none" : "initial"}
-          style={{ height: 200, width: 100 }}
-        >
-          <section style={{ background: "red" }}>{hovered?.score}kkk</section>
-        </motion.foreignObject>
+        {hovered && (
+          <motion.foreignObject
+            initial={false}
+            animate={{
+              x: xScale(hovered.date),
+              y: yScale(hovered.score),
+            }}
+            style={{ height: 200, width: 100 }}
+          >
+            <section style={{ background: "red" }}>{hovered?.score}kkk</section>
+          </motion.foreignObject>
+        )}
 
         <foreignObject />
         {/* Grid Lines */}
