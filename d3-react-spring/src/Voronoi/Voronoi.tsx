@@ -21,8 +21,19 @@ const data: Datum[] = [
   { category: "cold", x: 25.1, y: 614, id: 8 },
   { category: "cold", x: 23.4, y: 544, id: 9 },
   { category: "cold", x: 18.1, y: 421, id: 10 },
-  { category: "cold", x: 22.6, y: 445, id: 11 },
-  { category: "cold", x: 17.2, y: 408, id: 12 },
+  { category: "cold", x: 22.6, y: 446, id: 11 },
+  { category: "cold", x: 23.6, y: 345, id: 12 },
+  { category: "cold", x: 22.6, y: 405, id: 13 },
+  { category: "cold", x: 22.0, y: 425, id: 14 },
+  { category: "cold", x: 22.6, y: 415, id: 15 },
+  { category: "cold", x: 22.6, y: 422, id: 16 },
+  { category: "cold", x: 22.6, y: 401, id: 17 },
+  { category: "cold", x: 21.6, y: 430, id: 18 },
+  { category: "cold", x: 20.3, y: 427, id: 19 },
+  { category: "cold", x: 22.6, y: 439, id: 20 },
+  { category: "cold", x: 21.5, y: 413, id: 21 },
+  { category: "cold", x: 22.1, y: 428, id: 22 },
+  { category: "cold", x: 17.2, y: 408, id: 23 },
 ];
 
 const height = 700;
