@@ -19,7 +19,7 @@ const App = () => {
             alignItems: "center",
           }}
         >
-          <h1>this</h1>
+          <p>this</p>
           <VoronoiHoverTracker />
           {/*    <SpringPlay />
           <Somethings /> */}
@@ -41,7 +41,7 @@ const App = () => {
 
 export default App;
 
-const SpringPlay = () => {
+export const SpringPlay = () => {
   const p = d3.line()([
     [10, 60],
     [40, 90],
@@ -53,7 +53,7 @@ const SpringPlay = () => {
     from: { testNumber: 0 },
     config: { mass: 10, tension: 50, friction: 50, clamp: true },
   });
-  console.log("fef", p);
+  console.log("fef", p, props);
   const stroke = useSpring({
     someX: 400,
     from: { someX: 0 },
@@ -69,7 +69,7 @@ const SpringPlay = () => {
       <path
         d={String(p)}
         strokeDashoffset={stroke.someX.interpolate((val) => {
-          console.log("uytre", val.toFixed(0));
+
           return val.toFixed(0);
         })}
         strokeDasharray={400}
@@ -78,7 +78,7 @@ const SpringPlay = () => {
   );
 };
 
-const RandomCompo = () => {
+export const RandomCompo = () => {
   const [value, setValue] = useState("");
   const { addName } = useStuff(value);
 
@@ -115,4 +115,4 @@ const RandomCompo = () => {
   );
 };
 
-const useEvent = (event: DocumentEventMap) => {};
+export const useEvent = (event: DocumentEventMap) => {};
