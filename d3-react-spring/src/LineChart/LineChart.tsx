@@ -180,20 +180,6 @@ const LineChart = () => {
           );
         })}
 
-        {hovered && (
-          <motion.foreignObject
-            initial={false}
-            animate={{
-              x: xScale(hovered.date),
-              y: yScale(hovered.score),
-            }}
-            style={{ height: 200, width: 100 }}
-          >
-            <section style={{ background: "red" }}>{hovered?.score}kkk</section>
-          </motion.foreignObject>
-        )}
-
-        <foreignObject />
         {/* Grid Lines */}
         {[0, 25, 50, 75, 100, 125].map((score) => {
           return (
@@ -267,6 +253,20 @@ const LineChart = () => {
             );
           })}
         </g>
+        {hovered && (
+          <motion.foreignObject
+            initial={false}
+            animate={{
+              x: xScale(hovered.date),
+              y: yScale(hovered.score),
+            }}
+            style={{ height: 200, width: 100 }}
+          >
+            <section style={{ background: "red" }}>{hovered?.score}kkk</section>
+          </motion.foreignObject>
+        )}
+
+        <foreignObject />
       </g>
     </svg>
   );

@@ -89,7 +89,7 @@ const VoronoiHoverTracker = () => {
                 <text fontWeight="100" stroke="#bbb" fontSize="12">
                   {id}
                 </text>
-                <circle
+                <motion.circle
                   r={3}
                   strokeWidth={3}
                   fill="pink"
@@ -122,6 +122,19 @@ const VoronoiHoverTracker = () => {
             <section style={{ background: "#eaeaea" }}>
               {hovered?.x}:{hovered?.y}:{hovered?.id}
             </section>
+            <motion.circle
+              initial={{
+                fill: "teal",
+                r: 30,
+                opacity: 0,
+              }}
+              animate={{
+                fill: "green",
+                r: 100,
+                opacity: 1,
+              }}
+              strokeWidth={3}
+            />
           </motion.foreignObject>
         )}
       </g>

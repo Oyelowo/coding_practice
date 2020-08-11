@@ -12,7 +12,7 @@ const App = () => {
     <StrictMode>
       <RecoilRoot>
         <div
-          className=""
+          className="App"
           style={{
             display: "grid",
             justifyItems: "center",
