@@ -117,8 +117,8 @@ const LineChart = () => {
     <svg
       width={svgProps.WIDTH}
       height={svgProps.HEIGHT}
-      style={{ background: "", border: "1px solid #eff" }}
       pointerEvents="none"
+      style={{ background: "", border: "1px solid #eff" }}
     >
       <g
         transform={`translate(${margins.LEFT}, ${margins.TOP})`}
@@ -181,7 +181,7 @@ const LineChart = () => {
         })}
 
         {/* Grid Lines */}
-        {[0, 25, 50, 75, 100, 125].map((score) => {
+        {[0, 25, 50, 75, 100].map((score) => {
           return (
             <g key={score}>
               <line
