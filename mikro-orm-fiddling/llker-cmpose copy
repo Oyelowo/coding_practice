@@ -6,16 +6,14 @@ services:
   mongo_db:
     image: mongo:latest
     container_name: mdb
-    restart: on-failure
+    restart: always
     ports:
       - 27017:27017
-    volumes:
-      - ./mongo_db_vol:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-    # command: [--auth]
-    #ccommand: mongod --auth #  disable logging into the MongoDB shell without credentials
+    volumes:
+      - ./mongo_db_vol:/data/db
 
   mongo-express:
     container_name: mdbe
@@ -38,13 +36,13 @@ services:
     depends_on:
       - mongo_db
     restart: always
-    volumes:
-       - ./mongoclient_db_vol:/data/db
     ports:
       - 3005:3000
     environment:
-      MONGOCLIENT_DEFAULT_CONNECTION_URL: 'mongodb://root:example@mongo_db:27017/?authSource=admin'
-
+      MONGO_URL: "mongodb://root:example@mongo_db:27017/authSource=admin"
+      MONGOCLIENT_AUTH: "true"
+      MONGOCLIENT_USERNAME: root
+      MONGOCLIENT_PASSWORD: example
 
 
 # use named volume

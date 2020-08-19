@@ -3,20 +3,15 @@ import {
   Collection,
   Entity,
   ManyToMany,
-  MongoEntity,
   PrimaryKey,
   Property,
   SerializedPrimaryKey,
 } from "mikro-orm";
 import { Book } from ".";
+import { BaseEntity } from './BaseEntity';
 
 @Entity()
-export class BookTag implements MongoEntity<BookTag> {
-  @PrimaryKey()
-  _id!: ObjectID;
-
-  @SerializedPrimaryKey()
-  id!: string;
+export class BookTag extends BaseEntity{
 
   @Property()
   name: string;
@@ -25,6 +20,7 @@ export class BookTag implements MongoEntity<BookTag> {
   books: Collection<Book> = new Collection<Book>(this);
 
   constructor(name: string) {
+    super()
     this.name = name;
   }
 }

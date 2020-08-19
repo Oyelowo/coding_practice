@@ -8,18 +8,18 @@ import {
 import { AuthorController, BookController } from "./controllers";
 import { Author, Book, BookTag, Publisher } from "./entities";
 import { BaseEntity } from "./entities/BaseEntity";
+const app = express();
+const port = process.env.PORT || 3000;
 
-export const DI = {} as {
+
+/* export const DI = {} as {
   orm: MikroORM;
   em: EntityManager;
   authorRepository: EntityRepository<Author>;
   bookRepository: EntityRepository<Book>;
-};
+}; */
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-DI.orm = await MikroORM.init({
+const orm = await MikroORM.init({
   entities: [Author, Book, BookTag, Publisher, BaseEntity],
   entitiesDirsTs: ["app/entities"],
   dbName: "mikro-orm-express-ts",
@@ -27,9 +27,13 @@ DI.orm = await MikroORM.init({
   debug: true,
 });
 
-DI.em = DI.orm.em;
-DI.authorRepository = DI.orm.em.getRepository(Author);
-DI.bookRepository = DI.orm.em.getRepository(Book);
+
+export const DI = {
+  orm: orm,
+  em: orm.em,
+  authorRepository: orm.em.getRepository(Author),
+  bookRepository: orm.em.getRepository(Book),
+};
 
 app.use(express.json());
 app.use((req, res, next) => RequestContext.create(DI.orm.em, next));

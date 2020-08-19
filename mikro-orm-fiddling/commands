@@ -1,0 +1,6 @@
+
+after running docker-compose, run the below in new terminal
+`docker exec -it mdb bash`
+
+shell authenticate to mongodb local instance 
+mongo --username root --password --authenticationDatabase admin --host mongo_db --port 27017

@@ -1,12 +1,11 @@
 import {
-  MongoEntity,
   PrimaryKey,
   Property,
   SerializedPrimaryKey,
 } from "mikro-orm";
 import { ObjectID } from "mongodb";
 
-export abstract class BaseEntity implements MongoEntity<BaseEntity> {
+export abstract class BaseEntity{
   @PrimaryKey()
   _id!: ObjectID;
 

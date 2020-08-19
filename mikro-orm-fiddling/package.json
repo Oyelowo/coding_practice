@@ -3,16 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "tsc && node dist/server",
-    "start:dev": "tsnd --respawn server.ts"
+    "start:dev": "tsnd --respawn src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mikro-orm": "^3.6.15",
+    "mikro-orm": "^4.0.0-rc.1",
     "mongodb": "^3.6.0"
   },
   "devDependencies": {

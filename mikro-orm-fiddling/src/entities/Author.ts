@@ -4,10 +4,10 @@ import {
   Entity,
   OneToMany,
   Property,
-  ManyToOne,
+  ManyToOne, ManyToMany
 } from "mikro-orm";
 
-import { Book } from ".";
+import { Book, BookTag } from ".";
 import { BaseEntity } from "./BaseEntity";
 
 @Entity()
@@ -30,8 +30,24 @@ export class Author extends BaseEntity {
   @OneToMany(() => Book, (b) => b.author, { cascade: [Cascade.ALL] })
   books = new Collection<Book>(this);
 
+  //@OneToMany(() => Book, 'author', { cascade: [Cascade.ALL] })
+  //books = new Collection<Book>(this);
+
   @ManyToOne()
   favouriteBook?: Book;
+
+  // when none of `owner/inverseBy/mappedBy` is provided, it will be considered owning side
+  @ManyToMany()
+  tags1 = new Collection<BookTag>(this);
+
+  @ManyToMany(() => BookTag, "books", { owner: true })
+  tags2 = new Collection<BookTag>(this);
+
+  @ManyToMany(() => BookTag, "books", { owner: true })
+  tags3 = new Collection<BookTag>(this);
+
+  @ManyToMany(() => BookTag, "books", { owner: true })
+  tags4 = new Collection<BookTag>(this);
 
   constructor(name: string, email: string) {
     super();
