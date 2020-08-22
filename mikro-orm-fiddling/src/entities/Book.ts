@@ -6,8 +6,10 @@ import {
   ManyToOne,
   Property,
 } from "mikro-orm";
-import { Author, BookTag, Publisher } from "./index";
+import { Author } from "./Author";
 import { BaseEntity } from "./BaseEntity";
+import { BookTag } from "./BookTag";
+import { Publisher } from "./Publisher";
 
 @Entity()
 export class Book extends BaseEntity {
@@ -38,5 +40,3 @@ export class Book extends BaseEntity {
     this.author = author;
   }
 }
-
-

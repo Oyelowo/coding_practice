@@ -2,7 +2,8 @@ import express, { Request, Response } from "express";
 // import Router from "express-promise-router";
 import { QueryOrder, wrap } from "mikro-orm";
 import { DI } from "../server";
-import { Book } from "../entities";
+import { Book } from '../entities/Book';
+
 
 const router = express.Router();
 

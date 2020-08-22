@@ -1,3 +1,4 @@
 node_modules
 mongo_db_vol
 mongoclient_db_vol
+dist

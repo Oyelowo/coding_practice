@@ -3,7 +3,8 @@ import express, { Request, Response } from "express";
 import { QueryOrder, wrap } from "mikro-orm";
 
 import { DI } from "../server";
-import { Author } from "../entities";
+import { Author } from '../entities/Author';
+
 
 const router = express.Router();
 

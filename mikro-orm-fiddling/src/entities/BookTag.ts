@@ -7,8 +7,9 @@ import {
   Property,
   SerializedPrimaryKey,
 } from "mikro-orm";
-import { Book } from ".";
+
 import { BaseEntity } from './BaseEntity';
+import { Book } from "./Book";
 
 @Entity()
 export class BookTag extends BaseEntity{

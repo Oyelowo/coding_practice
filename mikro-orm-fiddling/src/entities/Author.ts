@@ -2,13 +2,14 @@ import {
   Cascade,
   Collection,
   Entity,
+  ManyToMany,
+  ManyToOne,
   OneToMany,
   Property,
-  ManyToOne, ManyToMany
 } from "mikro-orm";
-
-import { Book, BookTag } from ".";
 import { BaseEntity } from "./BaseEntity";
+import { Book } from "./Book";
+import { BookTag } from "./BookTag";
 
 @Entity()
 export class Author extends BaseEntity {

@@ -1,16 +1,13 @@
 import express from "express";
-import {
-  EntityManager,
-  EntityRepository,
-  MikroORM,
-  RequestContext,
-} from "mikro-orm";
-import { AuthorController, BookController } from "./controllers";
-import { Author, Book, BookTag, Publisher } from "./entities";
-import { BaseEntity } from "./entities/BaseEntity";
+import { MikroORM, RequestContext } from "mikro-orm";
+import { AuthorController } from "./controllers/author.controller";
+import { BookController } from "./controllers/book.controller";
+import { Author } from "./entities/Author";
+import { Book } from "./entities/Book";
+import { mikroOrmConfig } from "./mikro-orm.config";
+
 const app = express();
 const port = process.env.PORT || 3000;
-
 
 /* export const DI = {} as {
   orm: MikroORM;
@@ -19,14 +16,7 @@ const port = process.env.PORT || 3000;
   bookRepository: EntityRepository<Book>;
 }; */
 
-const orm = await MikroORM.init({
-  entities: [Author, Book, BookTag, Publisher, BaseEntity],
-  entitiesDirsTs: ["app/entities"],
-  dbName: "mikro-orm-express-ts",
-  logger: console.log.bind(console),
-  debug: true,
-});
-
+const orm = await MikroORM.init(mikroOrmConfig);
 
 export const DI = {
   orm: orm,

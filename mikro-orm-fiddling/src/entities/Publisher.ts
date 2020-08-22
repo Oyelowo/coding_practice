@@ -1,24 +1,9 @@
-import { ObjectID } from "mongodb";
-import {
-  Collection,
-  Entity,
-  Enum,
-  OneToMany,
-  PrimaryKey,
-  Property,
-  SerializedPrimaryKey,
-  MongoEntity,
-} from "mikro-orm";
-import { Book } from ".";
+import { Collection, Entity, Enum, OneToMany, Property } from "mikro-orm";
+import { BaseEntity } from "./BaseEntity";
+import { Book } from "./Book";
 
 @Entity()
-export class Publisher implements MongoEntity<Publisher> {
-  @PrimaryKey()
-  _id!: ObjectID;
-
-  @SerializedPrimaryKey()
-  id!: string;
-
+export class Publisher extends BaseEntity {
   @Property()
   name: string;
 
@@ -29,6 +14,7 @@ export class Publisher implements MongoEntity<Publisher> {
   books = new Collection<Book>(this);
 
   constructor(name: string, type = PublisherType.LOCAL) {
+    super()
     this.name = name;
     this.type = type;
   }
