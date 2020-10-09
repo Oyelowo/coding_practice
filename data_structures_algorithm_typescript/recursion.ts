@@ -100,10 +100,8 @@ const someData = {
 const kk = convertKeys(someData);
 console.log(JSON.stringify(kk));
 
-/* const camelizeKeys = (obj) => {
-  if (Array.isArray(obj)) {
-    return obj.map((v) => camelizeKeys(v));
-  } else if (obj !== null && obj.constructor === Object) {
+/* const camelizeKeys = (obj: object) => {
+  if (isObj(obj)) {
     return Object.keys(obj).reduce(
       (result, key) => ({
         ...result,
@@ -114,11 +112,10 @@ console.log(JSON.stringify(kk));
   }
   return obj;
 }; */
-
-
-
 const camelizeKeys = (obj: object) => {
-  if (isObj(obj)) {
+  if (Array.isArray(obj)) {
+    return obj.map((v) => camelizeKeys(v));
+  } else if (obj !== null && obj.constructor === Object) {
     return Object.keys(obj).reduce(
       (result, key) => ({
         ...result,
