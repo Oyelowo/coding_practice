@@ -1,3 +1,4 @@
+import { css } from '@emotion/core';
 import * as d3 from "d3";
 import React, { StrictMode, useEffect, useState } from "react";
 import { animated, useSpring } from "react-spring";
@@ -6,8 +7,18 @@ import "./App.css";
 import LineChart from "./LineChart/LineChart";
 import { useStuff } from "./recoil/Somethings";
 import VoronoiHoverTracker from "./Voronoi/Voronoi";
+import styled from '@emotion/styled';
 
-const App = () => {
+
+const Divi = styled.div({
+  background : 'green',
+  color: "white",
+  padding: 10,
+})
+
+
+const App = (): JSX.Element => {
+
   return (
     <StrictMode>
       <RecoilRoot>
@@ -19,7 +30,12 @@ const App = () => {
             alignItems: "center",
           }}
         >
-          <p>this</p>
+          <p css={css({
+          color: "blue"
+          })}>this</p>
+          <Divi>
+            I am
+          </Divi>
           <VoronoiHoverTracker />
           {/*    <SpringPlay />
           <Somethings /> */}

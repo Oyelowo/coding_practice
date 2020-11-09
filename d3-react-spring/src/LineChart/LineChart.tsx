@@ -1,8 +1,18 @@
+import styled from "@emotion/styled";
 import * as d3 from "d3";
 import { eachDayOfInterval, subDays } from "date-fns";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
-import styled from "styled-components";
+
+
+const SvgContainer = styled.svg({
+  background: "#eaeaea", 
+  border: "13px solid green",
+  "&:hover": {
+    background: ""
+  }
+})
+
 
 const Tooltip = styled.foreignObject({
   x: 3,
@@ -114,11 +124,10 @@ const LineChart = () => {
     hovered && yScale(hovered.score)
   );
   return (
-    <svg
+    <SvgContainer
       width={svgProps.WIDTH}
       height={svgProps.HEIGHT}
       pointerEvents="none"
-      style={{ background: "", border: "1px solid #eff" }}
     >
       <g
         transform={`translate(${margins.LEFT}, ${margins.TOP})`}
@@ -268,7 +277,7 @@ const LineChart = () => {
 
         <foreignObject />
       </g>
-    </svg>
+    </SvgContainer>
   );
 };
 
