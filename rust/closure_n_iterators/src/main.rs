@@ -1,160 +1,139 @@
-use std::{thread, time::Duration, collections::HashMap};
-
 fn main() {
-    let simulated_user_specified_value = 10;
-    let simulated_random_number = 7;
-
-     // generate_workout(simulated_user_specified_value, simulated_random_number);
-    generate_workout_with_caching(simulated_user_specified_value, simulated_random_number);
+    iterator_adaptors();
 }
 
-fn simulate_expensive_calculation(intensity: u32) -> u32 {
-    println!("calculating slowly...");
-    thread::sleep(Duration::from_secs(2));
-    intensity
+
+// Creating Our Own Iterators with the Iterator Trait
+struct Counter {
+    count: u32,
 }
 
-/* fn xample_clusure_defs() {
-    fn  add_one_v1   (x: u32) -> u32 { x + 1 } // Normal function
-let add_one_v2 = |x: u32| -> u32 { x + 1 };
-let add_one_v3 = |x|             { x + 1 };
-let add_one_v4 = |x|               x + 1  ;
-
-    let add_one_v0 = |x| x + 1;
-    let k = add_one_v0(3);
-
-    let example_closure = |x| x;
-    let s = example_closure(String::from("hello"));
-    // let n = example_closure(5); // won't work. String already inferre
-} */
-
-struct Cacher<T>
-where
-    T: Fn(u32) -> u32,
-{
-    calculation: T,
-    value: HashMap<u32,u32>,
-}
-
-impl <T> Cacher<T>
-where T: Fn(u32)->u32
-{
-    fn new(calculation: T)-> Cacher<T> {
-        Cacher{
-            calculation,
-            value: HashMap::new(),
-        }
+impl Counter {
+    fn new() -> Self{
+        Counter {count: 0}
     }
+}
 
-    fn value(&mut self, arg: u32) -> u32{
-  
-        match self.value.get(&arg) {
-            Some(v)=> *v,
-            None => {
-                let v = (self.calculation)(arg);
-                self.value.insert(arg, v);
-                v
-            }
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&mut self)-> Option<Self::Item> {
+        if self.count < 5 {
+            self.count += 1;
+            Some(self.count)
+        }else{
+            None
         }
     }
 }
 
-struct Cacher_old<T>
-where
-    T: Fn(u32) -> u32,
-{
-    calculation: T,
-    value: Option<u32>,
+#[test]
+fn using_other_iterator_trait_methods(){
+    let sum: u32 = Counter::new()
+    .zip(Counter::new().skip(1))
+    .map(|(a,b)| a*b)
+    .filter(|x| x % 3 == 0)
+    .sum();
+
+    assert_eq!(18, sum);
 }
 
-impl <T> Cacher_old<T>
-where T: Fn(u32)->u32
-{
-    fn new(calculation: T)-> Cacher_old<T> {
-        Cacher_old{
-            calculation,
-            value: None,
-        }
-    }
+#[test]
+fn calling_next_directly(){
+    let mut counter = Counter::new();
 
-    fn value(&mut self, arg: u32) ->u32{
-        match self.value {
-            Some(v)=>v,
-            None => {
-                let v = (self.calculation)(arg);
-                self.value = Some(v);
-                v
-            }
-        }
-    }
+    assert_eq!(counter.next(), Some(1));
+    assert_eq!(counter.next(), Some(2));
+    assert_eq!(counter.next(), Some(3));
+    assert_eq!(counter.next(), Some(4));
+    assert_eq!(counter.next(), Some(5));
+    assert_eq!(counter.next(), None);
 }
+
+#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_my_size(shoes: Vec<Shoe>, shoe_size: u32)-> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
 
     #[test]
-    fn call_with_different_values() {
-        let mut c = Cacher::new(|a| a);
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
 
-        let v1 = c.value(1);
-        let v2 = c.value(2);
-
-        assert_eq!(v2, 2);
-    }
-
-fn generate_workout_with_caching(intensity: u32, random_number: u32) {
-    //let expensive_result = simulate_expensive_calculation(intensity);
-    let mut expensive_closure = Cacher::new(|num| {
-        println!("Calculating slowly...");
-        thread::sleep(Duration::from_secs(5));
-        num
-    });
-    
+        let in_my_size = shoes_in_my_size(shoes, 10);
 
 
-    if intensity < 25 {
-        println!("Today, do {} pushups!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(66));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(intensity));
-        println!("Next, do {} situps!", expensive_closure.value(66));
-        println!("Next, do {} situps!", expensive_closure.value(66));
-        println!("Next, do {} situps!", expensive_closure.value(66));
-        println!("Next, do {} situps!", expensive_closure.value(66));
-        println!("Next, do {} situps!", expensive_closure.value(88));
-        println!("Next, do {} situps!", expensive_closure.value(89));
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!("Today, run for {} minutes", expensive_closure.value(intensity));
-        }
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker"),
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot"),
+                },
+            ]
+        )
     }
 }
 
-fn generate_workout(intensity: u32, random_number: u32) {
-    //let expensive_result = simulate_expensive_calculation(intensity);
-    let expensive_closure = |num: u32| -> u32 {
-        println!("Calculating slowly...");
-        thread::sleep(Duration::from_secs(2));
-        num
-    };
-    
 
 
-    if intensity < 25 {
-        println!("Today, do {} pushups!", expensive_closure(intensity));
-        println!("Next, do {} situps!", expensive_closure(intensity));
-        println!("Next, do {} situps!", expensive_closure(intensity));
-        println!("Next, do {} situps!", expensive_closure(intensity));
-        println!("Next, do {} situps!", expensive_closure(intensity));
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!("Today, run for {} minutes", expensive_closure(intensity));
-        }
+
+
+fn iterator_adaptors() {
+    let v1 = vec![1,2,3];
+    // v1.iter().map(|x| x + 1); // This is lazy and wont get called until collected with the collect method
+    let v2 :Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2,3,4]);
+
+}
+
+fn consuming_adaptors() {
+    /* 
+    Methods that call next are called consuming adaptors, because calling them uses up the iterator. One example is the sum method, which takes ownership of the iterator and iterates through the items by repeatedly calling next, thus consuming the iterator. As it iterates through, it adds each item to a running total and returns the total when iteration is complete.
+    */
+    let v1 = vec![1,2,3];
+    let v1_iter = v1.iter();
+    let total :i32 = v1_iter.sum();
+
+    assert_eq!(total, 6);
+}
+fn iterator_traits() {
+    let v1 = vec![1,2,3];
+    let mut v1_iter = v1.iter();
+
+    assert_eq!(v1_iter.next(), Some(&1));
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+
+    for val in v1_iter {
+        println!("Got: {}", val);
     }
 }
