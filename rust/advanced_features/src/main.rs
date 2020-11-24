@@ -1,92 +1,61 @@
-use std::ops::{Add, Div, Mul, Sub};
-
-// Default Generic Type Parameters and Operator Overloading
-
-
-#[derive(PartialEq, Debug)]
-struct Millimeters(u32);
-
-#[derive(PartialEq, Debug)]
-struct Meters(u32);
-
-// default type parameters. 
-/*
-Rhs : Right hand side
-trait Add<Rhs=Self> {
-    type Output;
-
-    fn add(self, rhs: Rhs) -> Self::Output;
-} */
-
-impl Add<Meters> for Millimeters {
-    type Output = Millimeters;
-    fn add(self, other: Meters) -> Millimeters {
-        Millimeters(self.0 + (other.0 * 1000))
-    }
-}
-
-impl Add<Millimeters> for Millimeters {
-    type Output = Millimeters;
-    fn add(self, other: Millimeters) -> Millimeters {
-        Millimeters(self.0 + other.0)
-    }
-}
-
-#[derive(Debug, PartialEq)]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-impl Point {
-    fn new(x: i32, y: i32) -> Self {
-        Point { x, y }
-    }
-}
-
-impl Add for Point {
-    type Output = Point;
-
-    fn add(self, other: Point) -> Point {
-        Point {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        }
-    }
-}
-
-impl Sub for Point {
-    type Output = Point;
-    fn sub(self, other: Point) -> Self::Output {
-        Point::new(self.x - other.x, self.y - other.y)
-    }
-}
-
-impl Div for Point {
-    type Output = Point;
-
-    fn div(self, other: Point) -> Self::Output {
-        Point::new(self.x / other.x, self.y / other.y)
-    }
-}
-
-impl Mul for Point {
-    type Output = Point;
-
-    fn mul(self, other: Point) -> Self::Output {
-        Point::new(self.x * other.x, self.y * other.y)
-    }
-}
-
 fn main() {
-    assert_eq!(Point::new(1, 0) + Point::new(2, 3), Point::new(3, 3));
-    assert_eq!(Point::new(1, 0) - Point::new(2, 3), Point::new(-1, -3));
-    assert_eq!(
-        Point::new(1, 0) / Point::new(2, 3),
-        Point::new((0.5 as u8).into(), 0)
-    );
-    assert_eq!(Point::new(1, 0) * Point::new(2, 3), Point::new(2, 0));
+    let person = Human;
+    Pilot::fly(&person);
+    Wizard::fly(&person);
+    Human::fly(&person);
+    person.fly();
 
-    assert_eq!(Millimeters(10) + Meters(4), Millimeters(4010));
-    assert_eq!(Millimeters(10) + Millimeters(42), Millimeters(52));
+    println!("A baby dog is called a {}", Dog::baby_name());
+
+    /* Won't work cos Animal impl for Dog has no self. It is
+    associated function, not associated method
+    println!("A baby dog is called a {}", Animal::baby_name()); */
+    // Solution: using fully qualified syntax (<Type as Trait>::function(receiver_if_method, next_arg, ...);)
+    println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
+}
+
+trait Pilot {
+    fn fly(&self);
+}
+
+trait Wizard {
+    fn fly(&self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&self) {
+        println!("This is your captain speaking.")
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&self) {
+        println!("Up.")
+    }
+}
+
+impl Human {
+    fn fly(&self) {
+        println!("waving arms furiously.")
+    }
+}
+
+trait Animal {
+    fn baby_name() -> String;
+}
+
+struct Dog;
+
+impl Dog {
+    fn baby_name() -> String {
+        String::from("Spot")
+    }
+}
+
+impl Animal for Dog {
+    fn baby_name() -> String {
+        String::from("puppy")
+    }
 }
