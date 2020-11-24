@@ -23,6 +23,7 @@ impl DraftPost {
         self.content.push_str(text);
     }
 
+    // This takes ownership of self
     pub fn request_review(self) -> PendingReviewPost {
         PendingReviewPost {
             content: self.content,
