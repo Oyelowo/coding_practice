@@ -8,7 +8,7 @@ use syn;
 pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
     // Construct a representation of Rust code as a syntax tree
     // that we can manipulate
-    let ast = syn::parse(input).expect("unable to parse");
+    let ast = syn::parse(input).expect("unable to parse Type implementing HelloMacro");
 
     // Build the trait implementation
     impl_hello_macro(&ast)
