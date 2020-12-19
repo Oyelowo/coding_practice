@@ -1,67 +1,100 @@
-use std::pin::Pin;
-use std::marker::PhantomPinned;
 
-// Pinning to the Heap
-#[derive(Debug)]
-struct Test {
-    a: String,
-    b: *const String,
-    _marker: PhantomPinned,
+#![allow(unused)]
+fn main() {
+use futures::{
+    future::{Fuse, FusedFuture, FutureExt},
+    stream::{FusedStream, Stream, StreamExt},
+    pin_mut,
+    select,
+};
+
+async fn get_new_num() -> u8 { /* ... */ 5 }
+
+async fn run_on_new_num(_: u8) { /* ... */ }
+
+async fn run_loop(
+    mut interval_timer: impl Stream<Item = ()> + FusedStream + Unpin,
+    starting_num: u8,
+) {
+    let run_on_new_num_fut = run_on_new_num(starting_num).fuse();
+    let get_new_num_fut = Fuse::terminated();
+    pin_mut!(run_on_new_num_fut, get_new_num_fut);
+    loop {
+        select! {
+            () = interval_timer.select_next_some() => {
+                // The timer has elapsed. Start a new `get_new_num_fut`
+                // if one was not already running.
+                if get_new_num_fut.is_terminated() {
+                    get_new_num_fut.set(get_new_num().fuse());
+                }
+            },
+            new_num = get_new_num_fut => {
+                // A new number has arrived-- start a new `run_on_new_num_fut`,
+                // dropping the old one.
+                run_on_new_num_fut.set(run_on_new_num(new_num).fuse());
+            },
+            // Run the `run_on_new_num_fut`
+            () = run_on_new_num_fut => {},
+            // panic if everything completed, since the `interval_timer` should
+            // keep yielding values indefinitely.
+            complete => panic!("`interval_timer` completed unexpectedly"),
+        }
+    }
+}
 }
 
-impl Test {
 
-    fn new(txt: &str) -> Pin<Box<Self>> {
-        let t = Test {
-            a: String::from(txt),
-            b: std::ptr::null(),
-            _marker: PhantomPinned,
-        };
-        let mut boxed = Box::pin(t);
-        let self_ptr: *const String = &boxed.as_ref().a;
-        unsafe { boxed.as_mut().get_unchecked_mut().b = self_ptr };
 
-        boxed
-    }
+#![allow(unused)]
+fn main2() {
+use futures::{
+    future::{Fuse, FusedFuture, FutureExt},
+    stream::{FusedStream, FuturesUnordered, Stream, StreamExt},
+    pin_mut,
+    select,
+};
 
-    fn a<'a>(self: Pin<&'a Self>) -> &'a str {
-        &self.get_ref().a
-    }
+async fn get_new_num() -> u8 { /* ... */ 5 }
 
-    fn b<'a>(self: Pin<&'a Self>) -> &'a String {
-        unsafe { &*(self.b) }
+async fn run_on_new_num(_: u8) -> u8 { /* ... */ 5 }
+
+// Runs `run_on_new_num` with the latest number
+// retrieved from `get_new_num`.
+//
+// `get_new_num` is re-run every time a timer elapses,
+// immediately cancelling the currently running
+// `run_on_new_num` and replacing it with the newly
+// returned value.
+async fn run_loop(
+    mut interval_timer: impl Stream<Item = ()> + FusedStream + Unpin,
+    starting_num: u8,
+) {
+    let mut run_on_new_num_futs = FuturesUnordered::new();
+    run_on_new_num_futs.push(run_on_new_num(starting_num));
+    let get_new_num_fut = Fuse::terminated();
+    pin_mut!(get_new_num_fut);
+    loop {
+        select! {
+            () = interval_timer.select_next_some() => {
+                // The timer has elapsed. Start a new `get_new_num_fut`
+                // if one was not already running.
+                if get_new_num_fut.is_terminated() {
+                    get_new_num_fut.set(get_new_num().fuse());
+                }
+            },
+            new_num = get_new_num_fut => {
+                // A new number has arrived-- start a new `run_on_new_num_fut`.
+                run_on_new_num_futs.push(run_on_new_num(new_num));
+            },
+            // Run the `run_on_new_num_futs` and check if any have completed
+            res = run_on_new_num_futs.select_next_some() => {
+                println!("run_on_new_num_fut returned {:?}", res);
+            },
+            // panic if everything completed, since the `interval_timer` should
+            // keep yielding values indefinitely.
+            complete => panic!("`interval_timer` completed unexpectedly"),
+        }
     }
 }
 
-pub fn main() {
-    let mut test1 = Test::new("test1");
-    let mut test2 = Test::new("test2");
-
-    println!("a: {}, b: {}",test1.as_ref().a(), test1.as_ref().b());
-    println!("a: {}, b: {}",test2.as_ref().a(), test2.as_ref().b());
-
-    
-    
 }
-
-
-
-
-
-/* use pin_utils::pin_mut; // `pin_utils` is a handy crate available on crates.io
-
-// A function which takes a `Future` that implements `Unpin`.
-fn execute_unpin_future(x: impl Future<Output = ()> + Unpin) { /* ... */ }
-
-let fut = async { /* ... */ };
-execute_unpin_future(fut); // Error: `fut` does not implement `Unpin` trait
-
-// Pinning with `Box`:
-let fut = async { /* ... */ };
-let fut = Box::pin(fut);
-execute_unpin_future(fut); // OK
-
-// Pinning with `pin_mut!`:
-let fut = async { /* ... */ };
-pin_mut!(fut);
-execute_unpin_future(fut); // OK */
