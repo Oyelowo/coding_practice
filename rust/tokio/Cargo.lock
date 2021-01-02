@@ -84,6 +84,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e0dcbc35f504eb6fc275a6d20e4ebcda18cf50d40ba6fabff8c711fa16cb3b16"
 
 [[package]]
+name = "bytes"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad1f8e949d755f9d79112b5bb46938e0ef9d3804a0b16dfab13aafcaa5f0fa72"
+
+[[package]]
 name = "cc"
 version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -247,7 +253,7 @@ checksum = "c48c9d5f346ae201dfdb9dbb82e34c34a7d48bfd3d7ec810786e6cd5256ff0f1"
 dependencies = [
  "async-stream",
  "atoi",
- "bytes",
+ "bytes 0.6.0",
  "structopt",
  "tokio 0.3.6",
  "tracing",
@@ -635,6 +641,7 @@ dependencies = [
 name = "tokio"
 version = "0.1.0"
 dependencies = [
+ "bytes 1.0.0",
  "mini-redis",
  "tokio 0.3.6",
 ]
@@ -646,7 +653,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "720ba21c25078711bf456d607987d95bce90f7c3bea5abe1db587862e7a1e87c"
 dependencies = [
  "autocfg",
- "bytes",
+ "bytes 0.6.0",
  "futures-core",
  "libc",
  "memchr",
