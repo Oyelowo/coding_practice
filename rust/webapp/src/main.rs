@@ -1,5 +1,6 @@
 // main.rs
-// #[macro_use]
+#[macro_use]
+extern crate diesel;
 extern crate juniper;
 
 use std::io;
@@ -11,6 +12,7 @@ use juniper::http::graphiql::graphiql_source;
 use juniper::http::GraphQLRequest;
 
 mod graphql_schema;
+mod schema;
 
 use crate::graphql_schema::{create_schema, Schema};
 
