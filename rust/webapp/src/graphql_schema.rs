@@ -92,8 +92,29 @@ impl Team {
     }
 }
 
-pub type Schema = RootNode<'static, QueryRoot, EmptyMutation<()>>;
+pub struct MutationRoot;
+
+#[juniper::object]
+impl MutationRoot {
+    fn create_member(data: NewMember) -> Member {
+        let connection = establish_connection();
+        diesel::insert_into(members::table)
+            .values(&data)
+            .get_result(&connection)
+            .expect("Error saving new post")
+    }
+}
+
+#[derive(juniper::GraphQLInputObject, Insertable)]
+#[table_name = "members"]
+pub struct NewMember {
+    pub name: String,
+    pub knockouts: i32,
+    pub team_id: i32,
+}
+
+pub type Schema = RootNode<'static, QueryRoot, MutationRoot>;
 
 pub fn create_schema() -> Schema {
-    Schema::new(QueryRoot {}, EmptyMutation::new())
+    Schema::new(QueryRoot {}, MutationRoot {})
 }
