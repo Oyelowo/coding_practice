@@ -25,6 +25,8 @@ strum_macros = "0.20.1"
 rdkafka = { version = "0.24.0", features = ["cmake-build"] }
 async-stream = "0.3.0"
 lazy_static = "1.4.0"
+sqlx = { version = "0.4.1", features = [ "postgres", "runtime-actix-native-tls", "migrate", "macros", "uuid", "time", "json"] }
+async-std = { version = "1.6", features = [ "attributes" ] }
 
 [dev-dependencies]
 jsonpath_lib = "0.2.6"

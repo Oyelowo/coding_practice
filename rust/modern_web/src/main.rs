@@ -6,8 +6,12 @@ use async_graphql_actix_web::Response;
 
 mod graphql_schema;
 use crate::graphql_schema::{create_schema, SchemaGraphQL};
+use sqlx::postgres::PgPoolOptions;
+// use sqlx::mysql::MySqlPoolOptions;
+// etc.
 
 // #[actix_web::main]
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     let schema = create_schema();
