@@ -16,7 +16,7 @@ use sqlx::postgres::PgPoolOptions;
 async fn main() -> std::io::Result<()> {
     let schema = create_schema();
 
-    println!("Playground: http://localhost:8000");
+    println!("Playground: http://localhost:8080");
 
     HttpServer::new(move || {
         App::new()

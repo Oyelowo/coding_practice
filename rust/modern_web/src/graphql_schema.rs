@@ -4,7 +4,7 @@ use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::Pool;
 use sqlx::Postgres;
-use std::default::Default;
+use std::{collections::HashMap, default::Default};
 use std::{env, num::ParseIntError};
 
 #[derive(SimpleObject)]
@@ -45,25 +45,25 @@ impl MathQuery {
         a + b
     }
 
-    /*     async fn parse_with_extensions(&self, input: String) -> Result<i32> {
-        Ok("234a"
-            .parse()
-            .map_err(|err: ParseIntError|
-                err.extend_with(|_, _|
-                    json!({"code": 400})
-                )
-            )?
-        )
-    } */
+    async fn parse_with_extensions(&self, input: String) -> Result<i32> {
+        Ok("234a".parse().map_err(|err: ParseIntError| {
+            err.extend_with(
+                |_, e| {
+                    json!({"code": 400});
+                    e.set("code", "OUT_OF_RANGE")
+                }, // json!({"code": 400})
+            )
+        })?)
+    }
 }
 
 // no traits are needed
 #[derive(Debug, SimpleObject)]
-struct Member {
-    id: i32,
-    name: String,
-    knockouts: i32,
-    team_id: i32,
+pub struct Member {
+    pub id: i32,
+    pub name: String,
+    pub knockouts: i32,
+    pub team_id: i32,
 }
 
 #[derive(Default)]
@@ -89,6 +89,17 @@ impl MembersQuery {
 pub struct Team {
     pub id: i32,
     pub name: String,
+
+   // #[graphql(skip)]
+   //  pub members: Vec<Member>,
+}
+#[derive(Debug, SimpleObject)]
+pub struct TeamWithMembers {
+    pub id: i32,
+    pub name: String,
+
+   // #[graphql(skip)]
+     pub members: Vec<Member>,
 }
 
 #[derive(Default)]
@@ -96,9 +107,25 @@ pub struct TeamQuery;
 
 #[Object]
 impl TeamQuery {
-    async fn users(&self) -> Result<Option<Vec<Team>>> {
+    async fn team(&self, id: i32) -> Result<Option<TeamWithMembers>> {
         let pool = connect_db().await?;
-        let teams: Vec<Team> = sqlx::query_as!(Team, "SELECT * FROM TEAMS")
+        let mut team: Team = sqlx::query_as!(Team, "SELECT * FROM TEAMS WHERE id = 1")
+            .fetch_one(&pool) // -> Vec<{ country: String, count: i64 }>
+            .await?;
+        let teamsMembers = sqlx::query_as!(Member, "SELECT * FROM MEMBERS WHERE team_id = 1")
+            .fetch_all(&pool) // -> Vec<{ country: String, count: i64 }>
+            .await?;
+        let kk : TeamWithMembers = TeamWithMembers {
+            id: team.id,
+            name: team.name,
+            members: teamsMembers,
+        };
+        println!("vv{:?}", kk);
+        Ok(Some(kk))
+    }
+    async fn members(&self) -> Result<Option<Vec<Member>>> {
+        let pool = connect_db().await?;
+        let teams: Vec<Member> = sqlx::query_as!(Member, "SELECT * FROM MEMBERS")
             .fetch_all(&pool) // -> Vec<{ country: String, count: i64 }>
             .await?;
         println!("vv{:?}", teams);
