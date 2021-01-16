@@ -63,14 +63,63 @@ pub struct Member {
     pub id: i32,
     pub name: String,
     pub knockouts: i32,
+
+    #[graphql(skip)]
     pub team_id: i32,
 }
+
+pub struct Memberd {
+    pub id: i32,
+    pub name: String,
+    pub knockouts: i32,
+}
+
+#[Object]
+impl Memberd {
+        async fn id(&self) -> i32 {
+        self.id
+    }
+
+        async fn name(&self) -> String {
+        self.name.to_string()
+    }
+
+        async fn knockouts(&self) -> i32 {
+        self.knockouts
+    }
+
+    async fn team(&self) -> Result<Option<Team>> {
+        let pool = connect_db().await?;
+        let team = sqlx::query_as!(
+            Team,
+            "SELECT * FROM TEAMS WHERE id=$1", 1
+        )
+        .fetch_optional(&pool)
+        .await?;
+        println!("vv{:?}", team);
+        Ok(team)
+    }
+}
+
 
 #[derive(Default)]
 pub struct MembersQuery;
 
 #[Object]
 impl MembersQuery {
+    async fn member(&self, id: i32) -> Result<Option<Memberd>> {
+        let pool = connect_db().await?;
+        // let members = sqlx::query_as!( "SELECT M.id, M.name, knockouts, team_id FROM MEMBERS AS M JOIN TEAMS AS T ON M.team_id = T.id")
+        let mut members = sqlx::query_as!(
+            Memberd,
+            "SELECT id, name, knockouts FROM MEMBERS AS M WHERE id=$1", id
+        )
+        .fetch_optional(&pool)
+        .await?;
+        // println!("vv{:?}", members);
+        Ok(members)
+    }
+
     async fn members(&self) -> Result<Option<Vec<Member>>> {
         let pool = connect_db().await?;
         // let members = sqlx::query_as!( "SELECT M.id, M.name, knockouts, team_id FROM MEMBERS AS M JOIN TEAMS AS T ON M.team_id = T.id")
