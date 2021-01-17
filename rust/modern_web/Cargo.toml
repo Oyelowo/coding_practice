@@ -27,6 +27,7 @@ async-stream = "0.3.0"
 lazy_static = "1.4.0"
 sqlx = { version = "0.4.1", features = [ "postgres", "runtime-actix-native-tls", "migrate", "macros", "uuid", "time", "json"] }
 async-std = { version = "1.6", features = [ "attributes" ] }
+itertools = "0.10.0"
 
 [dev-dependencies]
 jsonpath_lib = "0.2.6"

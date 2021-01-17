@@ -1,13 +1,42 @@
+use async_graphql::dataloader::*;
 use async_graphql::*;
 use dotenv::dotenv;
+use itertools::Itertools;
 use serde_json::json;
-use sqlx::postgres::PgPoolOptions;
-use sqlx::Pool;
-use sqlx::Postgres;
+use sqlx::{self, Pool, Postgres};
+use sqlx::{error::DatabaseError, postgres::PgPoolOptions};
 use std::{collections::HashMap, default::Default};
 use std::{env, num::ParseIntError};
 
-#[derive(Debug)]
+pub struct TeamLoader {
+    pub pool: sqlx::Pool<Postgres>,
+}
+
+#[async_trait::async_trait]
+impl Loader<i32> for TeamLoader {
+    type Value = Team;
+    type Error = Error;
+
+    async fn load(&self, keys: &[i32]) -> Result<HashMap<i32, Self::Value>, Self::Error> {
+        let pool = connect_db().await?;
+        /*  */
+
+        let mut mm: HashMap<i32, Team> = HashMap::new();
+        let team: Vec<Team> =
+            sqlx::query_as!(Team, "SELECT id, name FROM teams WHERE id IN (1, 2)")
+                .fetch_all(&pool)
+                .await?;
+        /*         let kk =  team.clone().iter().for_each(|t|{
+            mm.insert(t.id.clone(), t.clone());
+        }); */
+        Ok(team
+            .iter()
+            .map(|t| (t.id, t.to_owned()))
+            .collect::<HashMap<_, _>>())
+    }
+}
+
+#[derive(Debug, std::clone::Clone)]
 pub struct Team {
     pub id: i32,
     pub name: String,
@@ -35,7 +64,6 @@ impl Team {
         println!("membersOnTeamObject{:?}", members);
         Ok(members)
     }
-
 }
 
 // no traits are needed
@@ -80,7 +108,7 @@ pub struct MemberQuery;
 
 #[Object]
 impl MemberQuery {
-    async fn member(&self, id: i32) -> Result<Option<Member>> {
+    async fn member(&self, #[graphql(desc = "Id of Member")] id: i32) -> Result<Option<Member>> {
         let pool = connect_db().await?;
         // let members = sqlx::query_as!( "SELECT M.id, M.name, knockouts, team_id FROM MEMBERS AS M JOIN TEAMS AS T ON M.team_id = T.id")
         let members = sqlx::query_as!(
