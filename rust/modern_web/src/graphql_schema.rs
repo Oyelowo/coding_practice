@@ -21,7 +21,7 @@ impl Team {
         self.id
     }
     async fn name(&self) -> String {
-        self.name.to_owned()
+        self.name.to_string()
     }
 
     async fn members(&self) -> Result<Vec<Member>> {
@@ -32,9 +32,10 @@ impl Team {
         )
         .fetch_all(&pool)
         .await?;
-        println!("vv{:?}", members);
+        println!("membersOnTeamObject{:?}", members);
         Ok(members)
     }
+
 }
 
 // no traits are needed
@@ -69,7 +70,7 @@ impl Member {
         )
         .fetch_one(&pool)
         .await?;
-        println!("vv{:?}", team);
+        println!("teamOnMemberObject{:?}", team);
         Ok(team)
     }
 }
@@ -82,14 +83,14 @@ impl MemberQuery {
     async fn member(&self, id: i32) -> Result<Option<Member>> {
         let pool = connect_db().await?;
         // let members = sqlx::query_as!( "SELECT M.id, M.name, knockouts, team_id FROM MEMBERS AS M JOIN TEAMS AS T ON M.team_id = T.id")
-        let mut members = sqlx::query_as!(
+        let members = sqlx::query_as!(
             Member,
             "SELECT id, name, knockouts, team_id FROM MEMBERS AS M WHERE id=$1",
             id
         )
         .fetch_optional(&pool)
         .await?;
-        // println!("vv{:?}", members);
+        println!("memberQuery{:?}", members);
         Ok(members)
     }
 
@@ -99,7 +100,7 @@ impl MemberQuery {
         let members = sqlx::query_as!(Member, "SELECT id, name, knockouts, team_id FROM MEMBERS")
             .fetch_all(&pool)
             .await?;
-        println!("vv{:?}", members);
+        println!("memberSQuery{:?}", members);
         Ok(Some(members))
     }
 }
