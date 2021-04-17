@@ -23,16 +23,21 @@ impl Loader<i32> for TeamLoader {
 
         let mut mm: HashMap<i32, Team> = HashMap::new();
         let team: Vec<Team> =
-            sqlx::query_as!(Team, "SELECT id, name FROM teams WHERE id IN (1, 2)")
+            sqlx::query_as!(Team, "SELECT t.id, t.name FROM teams as t JOIN members as m ON m.team_id = t.id WHERE m.id= ANY($1::Int[])", keys)
+            // sqlx::query_as!(Team, "SELECT id, name FROM teams WHERE id = ANY($1::Int[])", keys)
                 .fetch_all(&pool)
                 .await?;
         /*         let kk =  team.clone().iter().for_each(|t|{
             mm.insert(t.id.clone(), t.clone());
         }); */
-        Ok(team
+        let loaded = team
             .iter()
             .map(|t| (t.id, t.to_owned()))
-            .collect::<HashMap<_, _>>())
+            .collect::<HashMap<_, _>>();
+        println!("teamLoader {:?}", team);
+        println!("teamLoaded {:?}", loaded);
+        println!("teamKeys {:?}", keys);
+        Ok(loaded)
     }
 }
 
@@ -90,16 +95,21 @@ impl Member {
         self.team_id
     }
 
-    async fn team(&self) -> Result<Team> {
+    async fn team(&self) -> Result<Option<Team>> {
         let pool = connect_db().await?;
-        let team = sqlx::query_as!(
+        let loader = DataLoader::new(TeamLoader { pool }).max_batch_size(100);
+
+        let member_id = self.id.to_string().parse::<i32>().expect("Can't stringif");
+
+        Ok(loader.load_one(member_id).await?)
+        /*    let team = sqlx::query_as!(
             Team,
             "SELECT t.id, t.name FROM teams as t JOIN members as m ON m.team_id = t.id WHERE m.id=$1", self.id
         )
         .fetch_one(&pool)
         .await?;
         println!("teamOnMemberObject{:?}", team);
-        Ok(team)
+        Ok(team) */
     }
 }
 
