@@ -1,7 +1,7 @@
 class NodeBox {
   constructor(
     private data: unknown,
-    private next: NodeBox = null,
+    private next: NodeBoex = null,
     private prev: NodeBox = null
   ) {}
 
