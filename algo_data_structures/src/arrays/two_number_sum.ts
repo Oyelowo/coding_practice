@@ -1,6 +1,6 @@
 // Mine
 
-function twoNumberSum(array, targetSum) {
+function twoNumberSum(array: number[], targetSum: number) {
   // Write your code here.
 
   return array.filter((el, i) =>
@@ -15,7 +15,7 @@ console.log(twoNumberSum(arr, tar));
 
 // Solution 2
 
-function twoNumberSum(array, targetSum) {
+function twoNumberSum(array: number[], targetSum: number) {
   // Write your code here.
   return array.filter(
     (el) =>
@@ -23,7 +23,7 @@ function twoNumberSum(array, targetSum) {
   );
 }
 
-function twoNumberSum2(array, targetSum) {
+function twoNumberSum2(array: number[], targetSum: number) {
   return array.reduce((acc, val) => {
     const num =
       val * 2 === targetSum
@@ -38,8 +38,8 @@ console.log("rearer", twoNumberSum2(arr, tar));
 
 // Others
 
-function twoNumberSum3(array, targetSum) {
-  return array.reduce((acc, val) => {
+export function twoNumberSum3(array: number[], targetSum: number) {
+  return array.reduce<number[]>((acc, val) => {
     if (acc.length === 2) {
       return acc;
     }
@@ -55,51 +55,22 @@ function twoNumberSum3(array, targetSum) {
 }
 
 
-
-function twoNumberSumLast(array, targetSum) {
-  const targetSumTracker = new Map()
-  for (const num of array) {
-
-    const secondNum = targetSum - num;
-
-    if (targetSumTracker.has(secondNum)) {
-      return [num, secondNum]
-    }
-
-    targetSumTracker.set(num, true)
-
-
-  }
-
-  return []
-}
-
-
-function twoNumberSum(array, targetSum) {
+export function twoNumberSum(array: number[], targetSum: number) {
   // Write your code here.
   const sortedArray = array.sort((a, b) => a - b);
   let left = 0;
-  let right = array.length - 1
+  let right = array.length - 1;
 
   while (left < right) {
-    const currentSum = array[left] + array[right]
-    console.log("array[right]", array[right])
-    console.log("array[left]", array[left])
-    console.log("left", left)
-    console.log("right", right)
-    console.log("currentSum", currentSum)
+    const currentSum = array[left] + array[right];
     if (currentSum === targetSum) {
-      return [array[left], array[right]]
+      return [array[left], array[right]];
     } else if (currentSum < targetSum) {
-      left++
+      left++;
     } else if (currentSum > targetSum) {
-      right--
+      right--;
     }
-
   }
 
-  return []
+  return [];
 }
-
-
-console.log("last", twoNumberSumLast(arr, tar));

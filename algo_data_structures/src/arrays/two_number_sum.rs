@@ -1,4 +1,10 @@
+
+
 pub fn two_number_sum(array: Vec<i64>, target_sum: i64) -> Vec<i64> {
+    let kk = array.iter().fold(HashMap::new(), |)
+    X + Y = target_sum
+    Y = target_sum - X
+
     let k = array
         .iter()
         // iterate and filter out
@@ -10,6 +16,36 @@ pub fn two_number_sum(array: Vec<i64>, target_sum: i64) -> Vec<i64> {
 
     k
 }
+
+pub fn two_number_sum2(array: Vec<i64>, target_sum: i64) -> Vec<i64> {
+    let k = array
+        .iter()
+        // iterate and filter out
+        .filter(|&el| {
+            !((el + el) == target_sum) && array.iter().any(|el2| (el + el2) == target_sum)
+        })
+        .map(|&m| m)
+        .collect::<Vec<_>>();
+
+    k
+}
+
+pub fn two_number_sum3(array: Vec<i64>, target_sum: i64) -> Vec<i64> {
+    let k = array
+        .iter()
+        .fold(|acc, val| {
+         let num = array.iter().find(|n| n + val)
+        })
+        // iterate and filter out
+        .collect::<Vec<_>>();
+
+    k
+}
+/* 
+x + y = target_sum
+
+y = target_sum - x
+*/
 
 /*
 export function twoNumberSum(array, targetSum) {
