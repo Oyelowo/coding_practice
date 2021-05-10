@@ -89,11 +89,11 @@ function twoNumberSum(array, targetSum) {
     console.log("right", right)
     console.log("currentSum", currentSum)
     if (currentSum === targetSum) {
-      return [array[left], array[right]]
+      return [array[left], array[right]];
     } else if (currentSum < targetSum) {
-      left++
+      left++;
     } else if (currentSum > targetSum) {
-      right--
+      right--;
     }
 
   }

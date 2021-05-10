@@ -3,9 +3,10 @@ mod arrays;
 use arrays as ar;
 
 fn main() {
-    println!("Hello, world!");
+    let k = vec![4,5];
     let arr = vec![3, 5, -4, 8, 11, 1, -1, 6];
     let target_sum = 10;
+      println!("first{:?}", ar::two_number_sum::two_number_sum(arr, target_sum));
 
     let arr = vec![3, 5, -4, 8, 11, 1, -1, 6];
     let target_sum = 15;
