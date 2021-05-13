@@ -1,0 +1,7 @@
+12 word mnemonic
+
+You run the words through a mnemonic algorithm such as BIP39 and it spits out various accounts with
+with their respective addresses, public and private keys.
+
+Check test mnemonic phrases on https://iancoleman.io/bip39/
+tumble above travel flower quit pave pilot citizen invest giraffe tone boost
