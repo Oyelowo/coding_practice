@@ -30,7 +30,8 @@ contract Inbox {
 - When creating a contract transaction, the `to` field should be left blank.
 
 - Anytime you want to change/update any data on the blockchain, you have to submit a transaction
-  and wait for the transaction to be approved. This takes time, costs money and returns a hash
+  and wait for the transaction to be approved. This takes time on the public network, costs money and returns a hash.
+  It may not appear on the test browser/network that the transaction takes time but in actual real-world case, it can take seconds.
 
 - When you're sending a transaction(i.e changing data on blockchain), even if your function returns
   a value and has a return type of the value, you are not getting the value back. Rather, you will
@@ -44,3 +45,5 @@ contract Inbox {
     }
 
     ```
+
+Sending a transaction to a function costs money
