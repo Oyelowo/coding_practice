@@ -63,13 +63,15 @@ const useForm = <T>(
     });
   };
 
-  const getInputAttributes = <ThisLabelName extends keyof T>(inputName: ThisLabelName) => {
+  const getInputAttributes = <ThisLabelName extends keyof T>(
+    inputName: ThisLabelName
+  ) => {
     return {
       onChange: handleInputChange,
       name: inputName,
       value: inputs[inputName],
       error: errors?.[inputName],
-      reset: () => resetField(inputName),
+      // reset: () => resetField(inputName),
     };
   };
 

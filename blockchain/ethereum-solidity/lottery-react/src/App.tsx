@@ -32,13 +32,26 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const accounts = await web3.eth.getAccounts();
+      setMessage('Waiting for transaction success...')
+      await lottery.methods.enter().send({
+        from: accounts?.[0],
+        value: web3.utils.toWei(etherInput.value, 'ether')
+      });
+      setMessage('Hooorray! You have been entered! ...')
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+
+  }
+
+  const handleClick = async () => {
     const accounts = await web3.eth.getAccounts();
-    setMessage('Waiting for transaction success...')
-    await lottery.methods.enter().send({
-      from: accounts[0],
-      value: web3.utils.toWei(etherInput.value, 'ether')
-    })
-    setMessage('Hooorray! You have been entered! ...')
+    setMessage('Waiting for transaction success...');
+
+    await lottery.methods.pickWinner().send({ from: accounts[0], });
+    setMessage('Congrats! A winner has been picked')
   }
 
   return (
@@ -59,6 +72,12 @@ function App() {
 
         <button>Enter</button>
       </form>
+
+      <hr />
+      <h4>Ready to pick a winner?</h4>
+
+      <button onClick={handleClick}>Pick a winner</button>
+      <hr />
       <h1>{message}</h1>
     </div>
   );
