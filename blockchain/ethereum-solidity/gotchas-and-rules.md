@@ -80,4 +80,15 @@ Max possible cost(if gas Limit is increased to 20) = 300wei/gas * 20 gas = 6,000
 NB: you spend gas to modify and store data on the network.
 Whoever is creating a contract has to pay the gas fee.  This then starts to affect the cost of using our application.
 e.g imagine people have to pay to create a post on linkedin, this starts to affect the cost of using linkedin which may prevent users.
-This limits the type of application you can build on ethereum but there are ways aroud this.
+This limits the type of application you can build on ethereum but there are ways around this.
+
+
+
+When working with an array, you have to access an individual element by providing the index.
+
+As at now(2018-2021), In solidity, you can build nested dynamic array, but not yet supported in the ABI/JS/Web3 bridge.
+Since string is stored as a dynamic array, it means we cannot have array of string.
+
+e.g `["red", "green", "blue"]`
+Here, the strings themselves are stored as dynamic array, thus with the above caveat, they cannot yet be stored
+in an array, which will make the entire thing a nested array

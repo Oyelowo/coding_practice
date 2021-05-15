@@ -1,8 +1,8 @@
 // contract test code will go here
 const assert = require("assert");
 const ganache = require("ganache-cli");
-const Web3 = require("web3");
-const web3 = new Web3(ganache.provider());
+const Web3 = require("web3"); // portal to the network.
+const web3 = new Web3(ganache.provider()); // hosts local test network.
 const { interface, bytecode } = require("../compile");
 
 let accounts;
@@ -27,13 +27,13 @@ describe("Inbox", () => {
   });
 
   it("has a default message", async () => {
-    const message = await inbox.methods.message().call();
+    const message = await inbox.methods.message().call(); // call readonly instantaneous action
 
     assert.strictEqual(message, "Hi there");
   });
 
   it("can change the message", async () => {
-    await inbox.methods.setMessage("New life").send({ from: accounts[0] });
+    await inbox.methods.setMessage("New life").send({ from: accounts[0] }); // send is not Instantaneous and used when we want to interact with the network to make change.
 
     const message = await inbox.methods.message().call();
 
