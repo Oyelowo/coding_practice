@@ -92,3 +92,9 @@ Since string is stored as a dynamic array, it means we cannot have array of stri
 e.g `["red", "green", "blue"]`
 Here, the strings themselves are stored as dynamic array, thus with the above caveat, they cannot yet be stored
 in an array, which will make the entire thing a nested array
+
+
+
+- For mappings, keys are not stored and values are not iterable. So, we cannot write for-loop to iterate over values of map,
+ all we can do is do a single value lookup in the map. It is a hash table.
+ For values that don't exist, a default value is returned.
