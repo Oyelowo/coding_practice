@@ -104,5 +104,11 @@ describe("Lottery Contract", () => {
       .call({ from: accounts[0] });
 
     assert.strictEqual(players.length, 0);
+
+    const contractBalance = await lottery.methods
+      .getBalance()
+      .call({ from: accounts[0] });
+
+    assert.strictEqual(Number(contractBalance), 0);
   });
 });

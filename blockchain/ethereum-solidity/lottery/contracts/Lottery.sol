@@ -27,6 +27,10 @@ contract Lottery {
         players = new address[](0); // reset the dynamic array and initialise it to empty array.
     }
 
+    function getBalance() public restricted view returns (uint256) {
+        return this.balance;
+    }
+
     // used to prevent validation repetition
     modifier restricted() {
         require(msg.sender == manager);
