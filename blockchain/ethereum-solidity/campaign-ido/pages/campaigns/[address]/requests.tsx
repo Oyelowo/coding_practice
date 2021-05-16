@@ -4,15 +4,15 @@ import {
   TableCaption,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import If from "../../../components/If";
 import Layout from "../../../components/Layout";
 import Campaign from "../../../ethereum/campaign";
 import web3 from "../../../ethereum/web3";
@@ -23,6 +23,27 @@ const RequestIndex = ({
   approversCount,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
+
+  const handleApproveRequest = async (id: string) => {
+    const campaign = Campaign(router.query.address);
+
+    const accounts = await web3.eth.getAccounts();
+    await campaign.methods.approveRequest(id).send({
+      from: accounts[0],
+    });
+  };
+
+  const handleFinalizeRequest = async (id: string) => {
+    const campaign = Campaign(router.query.address);
+
+    const accounts = await web3.eth.getAccounts();
+    await campaign.methods.finalizeRequest(id).send({
+      from: accounts[0],
+    });
+  };
+
+  //
+
   return (
     <Layout>
       <h3>Requests</h3>
@@ -33,7 +54,7 @@ const RequestIndex = ({
       </Link>
 
       <Table variant="simple">
-        <TableCaption>Imperial to metric conversion factors</TableCaption>
+        <TableCaption>Kickstarter info</TableCaption>
         <Thead>
           <Tr>
             <Th>ID</Th>
@@ -46,34 +67,56 @@ const RequestIndex = ({
           </Tr>
         </Thead>
         <Tbody>
-          {requests.map((request, i) => (
-            <Tr key={i}>
-              <Td>{i}</Td>
-              <Td>{request.description}</Td>
-              <Td isNumeric>{web3.utils.fromWei(request.value, "ether")}</Td>
-              <Td isNumeric>{request.recipient}</Td>
-              <Td isNumeric>
-                {request.approvalCounts}/{approversCount}
-              </Td>
-              <Td isNumeric>{request.recipient}</Td>
-            </Tr>
-          ))}
+          {requests?.map((request, i) => {
+            // Hightlight that it is ready to be finalized. Give highlighted color to the row.
+            const readyToFinalize = request.approvalCount > approversCount / 2;
+            return (
+              <Tr
+                key={i}
+                disabled={request.complete}
+                positive={readyToFinalize && !request.complete}
+              >
+                <Td>{i}</Td>
+                <Td>{request.description}</Td>
+                <Td isNumeric>{web3.utils.fromWei(request.value, "ether")}</Td>
+                <Td>{request.recipient}</Td>
+                <Td>
+                  {request.approvalCount}/{approversCount}
+                </Td>
+                <Td>
+                  <If condition={!request.complete}>
+                    <Button
+                      color="teal"
+                      onClick={() => handleApproveRequest(i)}
+                    >
+                      Approve
+                    </Button>
+                  </If>
+                </Td>
+                <If condition={!request.complete}>
+                  <Td>
+                    <Button
+                      color="teal"
+                      onClick={() => handleFinalizeRequest(i)}
+                    >
+                      Finalize
+                    </Button>
+                  </Td>
+                </If>
+              </Tr>
+            );
+          })}
         </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th>To convert</Th>
-            <Th>into</Th>
-            <Th isNumeric>multiply by</Th>
-          </Tr>
-        </Tfoot>
       </Table>
+
+      <div>Found {requestCount} requests</div>
     </Layout>
   );
 };
 
 export default RequestIndex;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getInitialProps = async (context) => {
   const campaign = Campaign(context.query.address);
   const requestCount = await campaign.methods.getRequestsCount().call();
   const approversCount = await campaign.methods.approversCount().call();
@@ -89,7 +132,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       notFound: true,
     };
   } */
-  console.log(requests);
+  console.log({requests});
 
   return {
     props: {
