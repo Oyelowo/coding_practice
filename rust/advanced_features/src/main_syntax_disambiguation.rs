@@ -10,7 +10,7 @@ fn main() {
     /* Won't work cos Animal impl for Dog has no self. It is
     associated function, not associated method
     println!("A baby dog is called a {}", Animal::baby_name()); */
-    // Solution: using fully qualified syntax (<Type as Trait>::function(receiver_if_method, next_arg, ...);)
+    // Solution: using fully qualified syntax (<Type as Trait>::function(receiver_of_method, next_arg, ...);)
     println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
 }
 
