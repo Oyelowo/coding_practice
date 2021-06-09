@@ -74,6 +74,40 @@ impl fmt::Display for Complex {
     }
 }
 
+/*
+
+Testcase: List
+Implementing fmt::Display for a structure where the elements
+must each be handled sequentially is tricky. The problem is that
+each write! generates a fmt::Result. Proper handling of this requires
+dealing with all the results. Rust provides the ? operator for exactly this purpose.
+*/
+// Using ? on write! looks like this:
+
+// Try `write!` to see if it errors. If it errors, return
+// the error. Otherwise continue.
+// write!(f, "{}", value)?;
+// With ? available, implementing fmt::Display for a Vec is straightforward:
+
+struct List(Vec<i32>);
+
+impl fmt::Display for List {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let vec = &self.0;
+
+        write!(f, "[")?;
+        for (count, value) in vec.iter().enumerate() {
+            if count != 0 {
+                write!(f, ", ")?;
+            }
+            write!(f, "{}: {}", value - 1, value)?;
+        }
+
+        // Close the opened bracket and return a fmt::Result value.
+        write!(f, "]")
+    }
+}
+
 fn main() {
     // For Display
     println!("This is the structure's number {}", Structure(3));
@@ -108,4 +142,7 @@ fn main() {
     let comp = Complex::new(3.3, 7.2);
     println!("Display: {}", comp);
     println!("Debug: {:#?}", comp);
+
+    let v = List(vec![1, 2, 3]);
+    println!("{}", v);
 }
