@@ -293,4 +293,10 @@ fn test_state() {
     println!("{}", post.content());
 
     assert_eq!(post.content(), "New text 1New text 2New text 3");
+
 }
+
+
+
+
+

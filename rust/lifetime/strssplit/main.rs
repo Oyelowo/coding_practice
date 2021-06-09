@@ -35,7 +35,7 @@ impl Sheep {
 impl Animal for Sheep {
     // `Self` is the implementor type: `Sheep`.
     fn new(name: &'static str) -> Sheep {
-        Sheep { name: name, naked: false }
+        Sheep { name, naked: false }
     }
 
     fn name(&self) -> &'static str {
@@ -65,7 +65,13 @@ fn main() {
     dolly.talk();
     dolly.shear();
     dolly.talk();
+
+    let k = get_something::<Iterator>([]);
 }
 
 
+
+fn get_something<T: Iterator>(name: T) -> T  {
+   name
+}
 
