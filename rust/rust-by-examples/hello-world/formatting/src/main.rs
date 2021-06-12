@@ -87,4 +87,7 @@ fn main() {
     // Switch this to use {} once you've added an implementation
     // for fmt::Display
     colors.iter().for_each(|color| println!("{}", color));
+
+  
 }
+
