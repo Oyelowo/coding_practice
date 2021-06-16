@@ -1,6 +1,44 @@
 fn main() {
     if_else();
     loop_();
+    nested_loop();
+}
+
+////////////////////////////////
+// Nesting and labels
+/*
+It's possible to break or continue outer loops when dealing
+with nested loops. In these cases, the loops must be annotated
+with some 'label, and the label must be passed to the break/continue statement.
+*/
+fn nested_loop() {
+    let mut counter = 0;
+    'outer: loop {
+        counter += 1;
+        println!("This is the outer, counter {}", counter);
+
+        /*      if counter > 50 {
+            break 'outer;
+        } */
+        let mut counter2 = 0;
+
+        'inner: loop {
+            counter2 += 1;
+            println!("This is the inner, counter {}", counter2);
+
+            if counter2 > 50 {
+                println!("This breaks inner");
+                break;
+            }
+
+            if counter2 + counter > 100 {
+                println!("This breaks outer");
+                break 'outer;
+            }
+        }
+        println!("This point will never be reached");
+    }
+    println!("Exited the outer loop");
 }
 
 //////////////////////////////////////////////////////////////
