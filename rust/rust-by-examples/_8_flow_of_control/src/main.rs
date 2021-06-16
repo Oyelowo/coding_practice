@@ -1,7 +1,33 @@
+use std::fmt::format;
+
 fn main() {
     if_else();
     loop_();
     nested_loop();
+    returning_from_loops();
+}
+
+/////////////////////////////////////
+// Returning from loops
+/*
+One of the uses of a loop is to retry an operation until it succeeds.
+If the operation returns a value though, you might need to pass
+it to the rest of the code: put it after the break, and it will be
+returned by the loop expression.
+*/
+
+fn returning_from_loops() {
+    let mut counter = 0;
+
+    let result = loop {
+        counter += 1;
+        println!("I am running the counter: {}", counter);
+
+        if counter == 50 {
+            break format!("This is returned {}", counter * 4);
+        }
+    };
+    println!("The result returning from the loop, {}", result);
 }
 
 ////////////////////////////////
