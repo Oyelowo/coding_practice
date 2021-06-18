@@ -6,6 +6,176 @@ fn main() {
     structs();
     guards();
     bindings();
+    if_let();
+    while_let();
+}
+
+///////////////////////////////////////////////////////////////////
+// While let
+/*
+Similar to if let, while let can make awkward match
+sequences more tolerable. Consider the following sequence that increments i:
+*/
+fn while_let() {
+    #![allow(unused)]
+
+    // Make `optional` of type `Option<i32>`
+    let mut optional = Some(0);
+
+    // Repeatedly try this test.
+    loop {
+        match optional {
+            // If `optional` destructures, evaluate the block.
+            Some(i) => {
+                if i > 9 {
+                    println!("Greater than 9, quit!");
+                    optional = None;
+                } else {
+                    println!("`i` is `{:?}`. Try again.", i);
+                    optional = Some(i + 1);
+                }
+                // ^ Requires 3 indentations!
+            }
+            // Quit the loop when the destructure fails:
+            _ => {
+                break;
+            } // ^ Why should this be required? There must be a better way!
+        }
+    }
+
+    let mut optional = Some(0);
+    println!("THIS IS WHILE");
+
+    // This reads: "while `let` destructures `optional` into
+    // `Some(i)`, evaluate the block (`{}`). Else `break`.
+    while let Some(x) = optional {
+        if x > 9 {
+            println!("Greater than 9, quit!");
+            optional = None;
+        } else {
+            println!("`i` is `{:?}`. Try again.", x);
+            optional = Some(x + 1);
+        }
+        // ^ Less rightward drift and doesn't require
+        // explicitly handling the failing case.
+    }
+    // ^ `if let` had additional optional `else`/`else if`
+    // clauses. `while let` does not have these.
+}
+
+///////////////////////////////////////////////////////////////////
+// If let
+// For some use cases, when matching enums, match is awkward. For example:
+
+/* #![allow(unused)]
+fn main() {
+// Make `optional` of type `Option<i32>`
+let optional = Some(7);
+
+match optional {
+    Some(i) => {
+        println!("This is a really long string and `{:?}`", i);
+        // ^ Needed 2 indentations just so we could destructure
+        // `i` from the option.
+    },
+    _ => {},
+    // ^ Required because `match` is exhaustive. Doesn't it seem
+    // like wasted space?
+};
+
+}
+ */
+
+// if let is cleaner for this use case and in addition allows various failure options to be specified:
+
+fn if_let() {
+    // All have type `Option<i32>`
+    let number = Some(7);
+    let letter: Option<i32> = None;
+    let emoticon: Option<i32> = None;
+
+    // The `if let` construct reads: "if `let` destructures `number` into
+    // `Some(i)`, evaluate the block (`{}`).
+    if let Some(x) = number {
+        println!("Matched: {:?}", x);
+    }
+
+    if let Some(a) = letter {
+        println!("Matched: {:?}", a);
+    } else {
+        println!("Didn't match the number, lets go with letter ")
+    }
+
+    // Provide an altered failing condition.
+    let i_like_letters = false;
+
+    if let Some(i) = emoticon {
+        println!("Matched {:?}!", i);
+    // Destructure failed. Evaluate an `else if` condition to see if the
+    // alternate failure branch should be taken:
+    } else if i_like_letters {
+        println!("Didn't match a number. Let's go with a letter!");
+    } else {
+        // The condition evaluated false. This branch is the default:
+        println!("I don't like letters. Let's go with an emoticon :)!");
+    }
+
+    // Our example enum
+    enum Foo {
+        Bar,
+        Baz,
+        Qux(u32),
+    }
+
+    // Create example variables
+    let a = Foo::Bar;
+    let b = Foo::Baz;
+    let c = Foo::Qux(100);
+
+    // Variable a matches Foo::Bar
+    if let Foo::Bar = a {
+        println!("a is foobar");
+    }
+
+    // Variable b does not match Foo::Bar
+    // So this will print nothing
+    if let Foo::Bar = b {
+        println!("b is foobar");
+    }
+
+    // Variable c matches Foo::Qux which has a value
+    // Similar to Some() in the previous example
+    if let Foo::Qux(value) = c {
+        println!("c is {}", value);
+    }
+
+    // Binding also works with `if let`
+    if let Foo::Qux(value @ 100) = c {
+        println!("c is one hundred");
+    }
+
+    /*
+        Another benefit is that if let allows us to match non-parameterized enum variants.
+        This is true even in cases where the enum doesn't implement or derive PartialEq.
+        In such cases if Foo::Bar == a would fail to compile, because instances of the enum
+        cannot be equated, however if let will continue to work.
+
+    Would you like a challenge? Fix the following example to use if let:
+        */
+
+    // This enum purposely neither implements nor derives PartialEq.
+    // That is why comparing Foo::Bar == a fails below.
+    enum Foo2 {
+        Bar,
+    }
+
+    let a = Foo2::Bar;
+
+    // Variable a matches Foo::Bar
+    if let Foo2::Bar = a {
+        // ^-- this causes a compile-time error. Use `if let` instead.
+        println!("a is foobar");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////
