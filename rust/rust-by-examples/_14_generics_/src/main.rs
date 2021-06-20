@@ -122,3 +122,44 @@ mod functions {
         generic(SGen('c'));
     }
 }
+
+mod Implementation {
+    // Similar to functions, implementations require care to remain generic.
+    struct S; // Concrete type S;
+    struct GenericVal<T>(T); // Generic type `GenericVal`
+
+    // impl of GenericVal where we explicitly specify type parameters:
+    impl GenericVal<i32> {}
+    impl GenericVal<&str> {}
+    impl GenericVal<S> {}
+
+    // `<T>` Must precede the type to remain generic
+    impl<T> GenericVal<T> {}
+
+    struct Val {
+        val: f64,
+    }
+
+    impl Val {
+        fn value(&self) -> &f64 {
+            &self.val
+        }
+    }
+
+    struct GenVal<T> {
+        gen_val: T,
+    }
+
+    impl<T> GenVal<T> {
+        fn value(&self) -> &T {
+            &self.gen_val
+        }
+    }
+
+    fn run() {
+        let x = Val { val: 3.0 };
+        let y = GenVal { gen_val: 3i32 };
+
+        println!("{}, {}", x.value(), y.value());
+    }
+}
