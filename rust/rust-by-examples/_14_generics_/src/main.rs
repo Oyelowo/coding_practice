@@ -5,6 +5,7 @@ fn main() {
     traits::run();
     bounds::run();
     multiple_bounds::run();
+    where_clauses::run();
 }
 mod intro {
     // Non-copyable types.
@@ -359,7 +360,7 @@ mod multiple_bounds {
         println!("t: `{:?}`", t);
         println!("u: `{:?}`", u);
     }
-    fn run() {
+    pub fn run() {
         let string = "hello world";
         let array = [1, 2, 3];
         let vec = vec![1, 2, 3];
@@ -368,5 +369,104 @@ mod multiple_bounds {
         // compare_prints(&array);
         // TODO ^ Try uncommenting this.
         compare_types(&array, &vec);
+    }
+}
+
+mod where_clauses {
+    /*
+    A bound can also be expressed using a where clause immediately
+    before the opening {, rather than at the type's first mention.
+    Additionally, where clauses can apply bounds to arbitrary types,
+    rather than just to type parameters.
+
+    */
+
+    /*      Some cases that a where clause is useful:
+
+    When specifying generic types and bounds separately is clearer: */
+    // impl<A: TraitB + TraitC, D: TraitE + TraitF> MyTrait<A, D> for YourType
+
+    // Expressing bounds with a `where` clause
+    /*   impl<A, D> for YourType<A, D> where
+    A:TraitB + TraitC,
+    D:TraitE + TraitF {} */
+
+    /*
+    When using a where clause is more expressive than using normal syntax.
+    The impl in this example cannot be directly expressed without a where clause:
+     */
+    use std::fmt::Debug;
+    trait PrintInOption {
+        fn print_in_option(self);
+    }
+
+    // Because we would otherwise have to express this as `T: Debug` or
+    // use another method of indirect approach, this requires a `where` clause:
+    impl<T> PrintInOption for T
+    where
+        Option<T>: Debug,
+        // T: Debug // wrong otherwise for Some(self)
+        // We want `Option<T>: Debug` as our bound because that is what's
+        // being printed. Doing otherwise would be using the wrong bound.
+    {
+        fn print_in_option(self) {
+            println!("{:?}", Some(self));
+        }
+    }
+    pub fn run() {
+        let vec = vec![1, 2, 3];
+
+        vec.print_in_option();
+    }
+}
+
+mod new_type {
+    const DAYS_IN_A_YEAR: i64 = 365;
+    /*
+        The newtype idiom gives compile time guarantees that the right
+        type of value is supplied to a program.
+
+    For example, an age verification function that checks age in years,
+    must be given a value of type Years.
+        */
+
+    struct Years(i64);
+
+    impl Years {
+        pub fn to_days(&self) -> Days {
+            Days(self.0 * DAYS_IN_A_YEAR)
+        }
+    }
+    struct Days(i64);
+
+    impl Days {
+        pub fn to_years(&self) -> Years {
+            Years(self.0 / DAYS_IN_A_YEAR)
+        }
+    }
+
+    fn old_enough(age: &Years) -> bool {
+        age.0 >= 18
+    }
+
+    pub fn run() {
+        let age = Years(5);
+        let age_days = age.to_days();
+        println!("Old enough {}", old_enough(&age));
+        println!("Old enough {}", old_enough(&age_days.to_years()));
+        // println!("Old enough {}", old_enough(&age_days));
+
+        /*
+                Uncomment the last print statement to observe that the type supplied must be Years.
+
+        To obtain the newtype's value as the base type, you may use the tuple
+        or destructuring syntax like so:
+                */
+
+        let years = Years(42);
+        let years_as_primitive_1: i64 = years.0;
+        let Years(years_as_primitive_2) = years;
+        // Obtain as reference
+        let Years(ref years_as_primitive_3) = years;
     }
 }
