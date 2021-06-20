@@ -1,72 +1,79 @@
-use std::fmt::Display;
-
-// Non-copyable types.
-struct Empty;
-struct Null;
-
-// A trait generic over `T`.
-trait DoubleDrop<T> {
-    // Define a method on the caller type which takes an
-    // additional single parameter `T` and does nothing with it.
-    fn double_drop(self, _: T);
-}
-
-// Implement `DoubleDrop<T>` for any generic parameter `T` and
-// caller `U`.
-impl<T, U> DoubleDrop<T> for U {
-    // This method takes ownership of both passed arguments,
-    // deallocating both.
-    fn double_drop(self, _: T) {}
-}
-
-struct T;
-
-fn get_it<T>(arg: T) -> T {
-    arg
-}
-
-// A concrete type `A`.
-struct A;
-
-// In defining the type `Single`, the first use of `A` is not preceded by `<A>`.
-// Therefore, `Single` is a concrete type, and `A` is defined as above.
-struct Single(A);
-//            ^ Here is `Single`s first use of the type `A`.
-
-// Here, `<T>` precedes the first use of `T`, so `SingleGen` is a generic type.
-// Because the type parameter `T` is generic, it could be anything, including
-// the concrete type `A` defined at the top.
-struct SingleGen<T>(T);
-
 fn main() {
-    let empty = Empty;
-    let null = Null;
+    intro::run();
+    functions::run();
+    implementation::run();
+    traits::run();
+    bounds::run();
+}
+mod intro {
+    // Non-copyable types.
+    struct Empty;
+    struct Null;
 
-    // Deallocate `empty` and `null`.
-    empty.double_drop(null);
-    println!("{}", 0.1 + 0.2);
+    // A trait generic over `T`.
+    trait DoubleDrop<T> {
+        // Define a method on the caller type which takes an
+        // additional single parameter `T` and does nothing with it.
+        fn double_drop(self, _: T);
+    }
 
-    //empty;
-    //null;
-    // ^ TODO: Try uncommenting these lines.
+    // Implement `DoubleDrop<T>` for any generic parameter `T` and
+    // caller `U`.
+    impl<T, U> DoubleDrop<T> for U {
+        // This method takes ownership of both passed arguments,
+        // deallocating both.
+        fn double_drop(self, _: T) {}
+    }
 
-    let looo = get_it::<&str>("lowo");
-    let looo = get_it::<_>("lowo");
-    let looo = get_it("lowo");
-    let looo = get_it::<&_>("lowo");
+    struct T;
 
-    // `Single` is concrete and explicitly takes `A`.
-    let _s = Single(A);
+    fn get_it<T>(arg: T) -> T {
+        arg
+    }
 
-    // Create a variable `_char` of type `SingleGen<char>`
-    // and give it the value `SingleGen('a')`.
-    // Here, `SingleGen` has a type parameter explicitly specified.
-    let _char: SingleGen<char> = SingleGen('a');
+    // A concrete type `A`.
+    struct A;
 
-    // `SingleGen` can also have a type parameter implicitly specified:
-    let _t = SingleGen(A); // Uses `A` defined at the top.
-    let _i32 = SingleGen(6); // Uses `i32`.
-    let _char = SingleGen('ä'); // Uses `char`.
+    // In defining the type `Single`, the first use of `A` is not preceded by `<A>`.
+    // Therefore, `Single` is a concrete type, and `A` is defined as above.
+    struct Single(A);
+    //            ^ Here is `Single`s first use of the type `A`.
+
+    // Here, `<T>` precedes the first use of `T`, so `SingleGen` is a generic type.
+    // Because the type parameter `T` is generic, it could be anything, including
+    // the concrete type `A` defined at the top.
+    struct SingleGen<T>(T);
+
+    pub fn run() {
+        let empty = Empty;
+        let null = Null;
+
+        // Deallocate `empty` and `null`.
+        empty.double_drop(null);
+        println!("{}", 0.1 + 0.2);
+
+        //empty;
+        //null;
+        // ^ TODO: Try uncommenting these lines.
+
+        let looo = get_it::<&str>("lowo");
+        let looo = get_it::<_>("lowo");
+        let looo = get_it("lowo");
+        let looo = get_it::<&_>("lowo");
+
+        // `Single` is concrete and explicitly takes `A`.
+        let _s = Single(A);
+
+        // Create a variable `_char` of type `SingleGen<char>`
+        // and give it the value `SingleGen('a')`.
+        // Here, `SingleGen` has a type parameter explicitly specified.
+        let _char: SingleGen<char> = SingleGen('a');
+
+        // `SingleGen` can also have a type parameter implicitly specified:
+        let _t = SingleGen(A); // Uses `A` defined at the top.
+        let _i32 = SingleGen(6); // Uses `i32`.
+        let _char = SingleGen('ä'); // Uses `char`.
+    }
 }
 
 mod functions {
@@ -107,7 +114,7 @@ mod functions {
     // Because `SGen<T>` is preceded by `<T>`, this function is generic over `T`.
     fn generic<T>(_s: SGen<T>) {}
 
-    fn run() {
+    pub fn run() {
         // Using the non-generic functions
         reg_fn(S(A)); // Concrete type.
         gen_spec_t(SGen(A)); // Implicitly specified type parameter `A`.
@@ -123,7 +130,7 @@ mod functions {
     }
 }
 
-mod Implementation {
+mod implementation {
     // Similar to functions, implementations require care to remain generic.
     struct S; // Concrete type S;
     struct GenericVal<T>(T); // Generic type `GenericVal`
@@ -156,10 +163,143 @@ mod Implementation {
         }
     }
 
-    fn run() {
+    pub fn run() {
         let x = Val { val: 3.0 };
         let y = GenVal { gen_val: 3i32 };
 
         println!("{}, {}", x.value(), y.value());
     }
+}
+
+mod traits {
+    /*
+    Of course traits can also be generic.
+    Here we define one which reimplements the Drop trait as a
+    generic method to drop itself and an input.
+    */
+
+    // Non-copyable types.
+    struct Empty;
+    struct Null;
+
+    // A trait generic over `T`.
+    trait DoubleDrop<T> {
+        // Define a method on the caller type which takes an
+        // additional single parameter `T` and does nothing with it.
+        fn double_drop(self, _: T);
+    }
+
+    // Implement `DoubleDrop<T>` for any generic parameter `T` and
+    // caller `U`.
+    impl<T, U> DoubleDrop<T> for U {
+        // This method takes ownership of both passed arguments,
+        // deallocating both.
+        fn double_drop(self, _: T) {}
+    }
+
+    pub fn run() {
+        let empty = Empty;
+        let null = Null;
+
+        // Deallocate `empty` and `null`.
+        empty.double_drop(null);
+
+        //empty;
+        //null;
+        // ^ TODO: Try uncommenting these lines.
+    }
+}
+
+mod bounds {
+    use std::fmt::Display;
+
+    /*
+    When working with generics, the type parameters often must use
+    traits as bounds to stipulate what functionality a type implements.
+    For example, the following example uses the trait Display to print
+    and so it requires T to be bound by Display; that is, T must implement Display.
+    */
+
+    // Define a function `printer` that takes a generic type `T` which
+    // must implement trait `Display`.
+    fn printer<T: Display>(t: T) {
+        println!("{}", t);
+    }
+    fn printer2<T>(t: T)
+    where
+        T: Display,
+    {
+        println!("{}", t);
+    }
+
+    /*
+    Bounding restricts the generic to types that conform to the bounds. That is:
+    */
+    struct S<T: Display>(T);
+
+    // A trait which implements the print marker: `{:?}`.
+    use std::fmt::Debug;
+
+    /*
+    Another effect of bounding is that generic instances are allowed to
+    access the methods of traits specified in the bounds. For example:
+    */
+    trait HasArea {
+        fn area(&self) -> f64;
+    }
+
+    #[derive(Debug)]
+    struct Rectangle {
+        length: f64,
+        height: f64,
+    }
+
+    #[allow(dead_code)]
+    struct Triangle {
+        length: f64,
+        height: f64,
+    }
+
+    impl HasArea for Rectangle {
+        fn area(&self) -> f64 {
+            self.length * self.height
+        }
+    }
+
+    // The generic `T` must implement `Debug`. Regardless
+    // of the type, this will work properly.
+    fn print_debug<T: Debug>(t: &T) {
+        println!("{:?}", t);
+    }
+
+    fn area<T: HasArea>(t: &T) -> f64 {
+        t.area()
+    }
+
+    pub fn run() {
+        // Error! `Vec<T>` does not implement `Display`. This
+        // specialization will fail.
+        // let s = S(vec![1]);
+
+        let rectangle = Rectangle {
+            length: 34.5,
+            height: 52.2,
+        };
+        let _triangle = Triangle {
+            length: 24.1,
+            height: 48.2,
+        };
+
+        print_debug(&rectangle);
+        println!("Area: {:?}", area(&rectangle));
+
+        //print_debug(&_triangle);
+        //println!("Area: {}", area(&_triangle));
+        // ^ TODO: Try uncommenting these.
+        // | Error: Does not implement either `Debug` or `HasArea`.
+    }
+
+    /*
+    As an additional note, where clauses can also be used to apply bounds in some cases to be more expressive.
+    */
 }
