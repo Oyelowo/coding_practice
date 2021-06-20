@@ -4,6 +4,7 @@ fn main() {
     implementation::run();
     traits::run();
     bounds::run();
+    multiple_bounds::run();
 }
 mod intro {
     // Non-copyable types.
@@ -332,7 +333,7 @@ mod bounds {
         // because of the bounds.
         println!("A cardinal is {}", red(&cardinal));
         println!("A blue jay is {}", blue(&blue_jay));
-        
+
         //println!("A turkey is {}", red(&_turkey));
         // ^ TODO: Try uncommenting this line.
     }
@@ -340,4 +341,32 @@ mod bounds {
     /*
     As an additional note, where clauses can also be used to apply bounds in some cases to be more expressive.
     */
+}
+
+mod multiple_bounds {
+    use std::fmt::{Debug, Display};
+
+    /*
+    Multiple bounds for a single type can be applied with a +.
+    Like normal, different types are separated with ,.
+    */
+    fn compare_prints<T: Debug + Display>(t: &T) {
+        println!("Debug: `{:?}`", t);
+        println!("Display: `{}`", t);
+    }
+
+    fn compare_types<T: Debug, U: Debug>(t: &T, u: &U) {
+        println!("t: `{:?}`", t);
+        println!("u: `{:?}`", u);
+    }
+    fn run() {
+        let string = "hello world";
+        let array = [1, 2, 3];
+        let vec = vec![1, 2, 3];
+
+        compare_prints(&string);
+        // compare_prints(&array);
+        // TODO ^ Try uncommenting this.
+        compare_types(&array, &vec);
+    }
 }
