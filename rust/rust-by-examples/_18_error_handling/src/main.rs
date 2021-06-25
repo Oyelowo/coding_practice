@@ -3,6 +3,7 @@ fn main() {
     option_and_unwrap::main();
     unpacking_with_question_marks::main();
     combinators_map::main();
+    combinators_and_then::main();
 }
 
 mod panic {
@@ -279,5 +280,97 @@ mod combinators_map {
         eat(cooked_apple);
         eat(cooked_carrot);
         eat(cooked_potato);
+    }
+}
+
+mod combinators_and_then {
+    /*
+    map() was described as a chainable way to simplify match statements.
+    However, using map() on a function that returns an Option<T> results in the nested Option<Option<T>>.
+    Chaining multiple calls together can then become confusing.
+    That's where another combinator called and_then(), known in some languages as flatmap, comes in.
+
+    and_then() calls its function input with the wrapped value and returns the result.
+    If the Option is None, then it returns None instead.
+
+    In the following example, cookable_v2() results in an Option<Food>.
+    Using map() instead of and_then() would have given an Option<Option<Food>>,
+    which is an invalid type for eat().
+    */
+
+    #![allow(dead_code)]
+
+    #[derive(Debug)]
+    enum Food {
+        CordonBleu,
+        Steak,
+        Sushi,
+    }
+    #[derive(Debug)]
+    enum Day {
+        Monday,
+        Tuesday,
+        Wednesday,
+    }
+
+    // We don't have the ingredients to make Sushi.
+    fn have_ingredients(food: Food) -> Option<Food> {
+        match food {
+            Food::Sushi => None,
+            _ => Some(food),
+        }
+    }
+
+    // We have the recipe for everything except Cordon Bleu.
+    fn have_recipe(food: Food) -> Option<Food> {
+        match food {
+            Food::CordonBleu => None,
+            _ => Some(food),
+        }
+    }
+
+    // To make a dish, we need both the recipe and the ingredients.
+    // We can represent the logic with a chain of `match`es:
+    fn cookable_v1(food: Food) -> Option<Food> {
+        match have_recipe(food) {
+            None => None,
+            Some(food) => match have_ingredients(food) {
+                None => None,
+                Some(food) => Some(food),
+            },
+        }
+    }
+
+    fn cookable_v2_with_and_then(food: Food) -> Option<Food> {
+        // Returns Option<Food>
+        let k = have_ingredients(food).and_then(have_recipe);
+        k
+        // Using map to do the same but inconvenient
+        // returns Option<Option<Food>>
+        /*  let k = have_ingredients(food).map(|f|have_recipe(f));
+        Some(k??) */
+    }
+    fn cookable_v2_with_map(food: Food) -> Option<Food> {
+        // Returns Option<Food>
+        /*     let k = have_ingredients(food).and_then(have_recipe);
+        k */
+        // Using map to do the same but inconvenient
+        // returns Option<Option<Food>>
+        let k = have_ingredients(food).map(|f| have_recipe(f));
+        Some(k??)
+    }
+
+    fn eat(food: Food, day: Day) {
+        match cookable_v2_with_and_then(food) {
+            Some(foodie) => println!("Yay! On {:?} we get to eat {:?}.", day, foodie),
+            None => println!("Oh no. We don't get to eat on {:?}?", day),
+        }
+    }
+
+    pub fn main() {
+        let (cordon_bleu, steak, sushi) = (Food::CordonBleu, Food::Steak, Food::Sushi);
+        eat(cordon_bleu, Day::Monday);
+        eat(steak, Day::Tuesday);
+        eat(sushi, Day::Wednesday);
     }
 }
