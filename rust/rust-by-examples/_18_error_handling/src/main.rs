@@ -4,6 +4,8 @@ fn main() {
     unpacking_with_question_marks::main();
     combinators_map::main();
     combinators_and_then::main();
+    result::main();
+    map_for_result::main();
 }
 
 mod panic {
@@ -372,5 +374,156 @@ mod combinators_and_then {
         eat(cordon_bleu, Day::Monday);
         eat(steak, Day::Tuesday);
         eat(sushi, Day::Wednesday);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Result
+/*
+Result is a richer version of the Option type that describes possible error instead of possible absence.
+
+That is, Result<T, E> could have one of two outcomes:
+
+Ok(T): An element T was found
+Err(E): An error was found with element E
+By convention, the expected outcome is Ok while the unexpected outcome is Err.
+
+Like Option, Result has many methods associated with it. unwrap(), for example,
+either yields the element T or panics. For case handling,
+there are many combinators between Result and Option that overlap.
+
+In working with Rust, you will likely encounter methods that return the Result type,
+such as the parse() method. It might not always be possible to parse a
+string into the other type, so parse() returns a Result indicating possible failure.
+
+Let's see what happens when we successfully and unsuccessfully parse() a string:
+*/
+
+mod result {
+    fn multiply(first_number_str: &str, second_number_str: &str) -> i32 {
+        // Let's try using `unwrap()` to get the number out. Will it bite us?
+        let first_number: i32 = first_number_str.parse().unwrap();
+        let second_number = second_number_str.parse::<i32>().unwrap();
+        first_number * second_number
+    }
+
+    pub fn main() {
+        without_result();
+        main_with_result();
+        main_with_result2();
+    }
+
+    pub fn without_result() {
+        let twenty = multiply("10", "2");
+        println!("double is {}", twenty);
+
+        // let tt = multiply("t", "2");
+        // println!("double is {}", tt);
+    }
+
+    /*
+        In the unsuccessful case, parse() leaves us with an error for unwrap() to panic on.
+        Additionally, the panic exits our program and provides an unpleasant error message.
+
+    To improve the quality of our error message, we should be more specific about
+    the return type and consider explicitly handling the error.
+        */
+
+    /*
+            Using Result in main
+    The Result type can also be the return type of the main function if specified explicitly.
+    Typically the main function will be of the form:
+            */
+    use std::num::ParseIntError;
+
+    pub fn main_with_result() -> Result<(), ParseIntError> {
+        let number_str = "10";
+        let number = match number_str.parse::<i32>() {
+            Ok(n) => n,
+            Err(err) => return Err(err),
+        };
+
+        println!("{}", number);
+        Ok(())
+    }
+
+    pub fn main_with_result2() -> Result<(), ParseIntError> {
+        let number_str = "10";
+        let number = number_str.parse::<i32>()?;
+
+        println!("{}", number);
+        Ok(())
+    }
+}
+
+mod map_for_result {
+    use std::num::ParseIntError;
+
+    /*
+        map for Result
+    Panicking in the previous example's multiply does not make for robust code.
+    Generally, we want to return the error to the caller so it can decide what is the right way to respond to errors.
+
+    We first need to know what kind of error type we are dealing with.
+    To determine the Err type, we look to parse(), which is implemented
+     with the FromStr trait for i32. As a result, the Err type is specified as ParseIntError.
+
+    In the example below, the straightforward match statement leads to code that is overall more cumbersome.
+        */
+
+    // With the return type rewritten, we use pattern matching without `unwrap()`.
+    fn multiply(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+        match first_number_str.parse::<i32>() {
+            Ok(first_number) => match second_number_str.parse::<i32>() {
+                Ok(second_number) => Ok(first_number * second_number),
+                Err(e) => Err(e),
+            },
+            Err(e) => Err(e),
+        }
+    }
+
+    fn print(result: Result<i32, ParseIntError>) {
+        match result {
+            Ok(n) => println!("n is {}", n),
+            Err(e) => println!("Error: {}", e),
+        }
+    }
+
+    /*
+    Luckily, Option's map, and_then, and many other combinators are also implemented for Result. Result contains a complete listing.
+     */
+
+    // As with `Option`, we can use combinators such as `map()`.
+    // This function is otherwise identical to the one above and reads:
+    // Modify n if the value is valid, otherwise pass on the error.
+    fn multiply2(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+        let k = first_number_str
+            .parse::<i32>()
+            .and_then(|a| second_number_str.parse::<i32>().map(|b| a * b));
+
+        let k = first_number_str
+            .parse::<i32>()
+            .and_then(|a| second_number_str.parse::<i32>().and_then(|b| Ok(b * a)));
+        k
+        /*      let k = first_number_str.parse::<i32>()? * second_number_str.parse::<i32>()?;
+        Ok(k) */
+    }
+
+    pub fn main() {
+        // This still presents a reasonable answer.
+        let twenty = multiply("10", "2");
+        print(twenty);
+
+        // The following now provides a much more helpful error message.
+        let tt = multiply("t", "2");
+        print(tt);
+
+        // This still presents a reasonable answer.
+        let twenty = multiply2("10", "2");
+        print(twenty);
+
+        // The following now provides a much more helpful error message.
+        let tt = multiply2("t", "2");
+        print(tt);
     }
 }
