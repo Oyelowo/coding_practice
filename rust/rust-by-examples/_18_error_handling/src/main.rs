@@ -471,8 +471,17 @@ mod map_for_result {
     In the example below, the straightforward match statement leads to code that is overall more cumbersome.
         */
 
+    /*
+            aliases for Result
+    How about when we want to reuse a specific Result type many times? Recall that Rust allows us to create aliases. Conveniently, we can define one for the specific Result in question.
+
+    At a module level, creating aliases can be particularly helpful. Errors found in a specific module often have the same Err type, so a single alias can succinctly define all associated Results. This is so useful that the std library even supplies one: io::Result!
+
+    Here's a quick example to show off the syntax:
+            */
+    type AliasedResult<T> = Result<T, ParseIntError>;
     // With the return type rewritten, we use pattern matching without `unwrap()`.
-    fn multiply(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+    fn multiply(first_number_str: &str, second_number_str: &str) -> AliasedResult<i32> {
         match first_number_str.parse::<i32>() {
             Ok(first_number) => match second_number_str.parse::<i32>() {
                 Ok(second_number) => Ok(first_number * second_number),
@@ -482,7 +491,7 @@ mod map_for_result {
         }
     }
 
-    fn print(result: Result<i32, ParseIntError>) {
+    fn print(result: AliasedResult<i32>) {
         match result {
             Ok(n) => println!("n is {}", n),
             Err(e) => println!("Error: {}", e),
@@ -496,7 +505,7 @@ mod map_for_result {
     // As with `Option`, we can use combinators such as `map()`.
     // This function is otherwise identical to the one above and reads:
     // Modify n if the value is valid, otherwise pass on the error.
-    fn multiply2(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+    fn multiply2(first_number_str: &str, second_number_str: &str) -> AliasedResult<i32> {
         let k = first_number_str
             .parse::<i32>()
             .and_then(|a| second_number_str.parse::<i32>().map(|b| a * b));
@@ -526,4 +535,102 @@ mod map_for_result {
         let tt = multiply2("t", "2");
         print(tt);
     }
+
+    mod early_returns {
+        /*
+                In the previous example, we explicitly handled the errors using combinators.
+                Another way to deal with this case analysis is to use a combination of match statements and early returns.
+
+        That is, we can simply stop executing the function and return the error if one occurs.
+        For some, this form of code can be easier to both read and write.
+        Consider this version of the previous example, rewritten using early returns:
+                */
+        use std::num::ParseIntError;
+
+        fn multiply(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+            let first_number = match first_number_str.parse::<i32>() {
+                Ok(first_number) => first_number,
+                Err(e) => return Err(e),
+            };
+
+            let second_number = match second_number_str.parse::<i32>() {
+                Ok(second_number) => second_number,
+                Err(e) => return Err(e),
+            };
+
+            Ok(first_number * second_number)
+        }
+
+        fn print(result: Result<i32, ParseIntError>) {
+            match result {
+                Ok(n) => println!("n is {}", n),
+                Err(e) => println!("Error: {}", e),
+            }
+        }
+
+        fn main() {
+            print(multiply("10", "2"));
+            print(multiply("t", "2"));
+        }
+
+        /*
+                At this point, we've learned to explicitly handle errors using combinators
+                nd early returns. While we generally want to avoid panicking,
+                explicitly handling all of our errors is cumbersome.
+
+        In the next section, we'll introduce ? for the cases where we simply
+        need to unwrap without possibly inducing panic.
+                */
+    }
+}
+
+mod question_mark_error {
+    /*
+        Introducing ?
+    Sometimes we just want the simplicity of unwrap without the possibility of a panic.
+    Until now, unwrap has forced us to nest deeper and deeper when what we really
+    wanted was to get the variable out. This is exactly the purpose of ?.
+
+    Upon finding an Err, there are two valid actions to take:
+
+    panic! which we already decided to try to avoid if possible
+    return because an Err means it cannot be handled
+    ? is almost1 exactly equivalent to an unwrap which returns instead of panicking on Errs.
+    Let's see how we can simplify the earlier example that used combinators:
+        */
+
+    use std::num::ParseIntError;
+
+    fn multiply(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+        let first_number = first_number_str.parse::<i32>()?;
+        let second_number = second_number_str.parse::<i32>()?;
+
+        Ok(first_number * second_number)
+    }
+
+    fn print(result: Result<i32, ParseIntError>) {
+        match result {
+            Ok(n) => println!("n is {}", n),
+            Err(e) => println!("Error: {}", e),
+        }
+    }
+
+    fn main() {
+        print(multiply("10", "2"));
+        print(multiply("t", "2"));
+    }
+
+    /*
+        The try! macro
+    Before there was ?, the same functionality was achieved with the try! macro.
+    The ? operator is now recommended, but you may still find try! when looking at older code.
+    The same multiply function from the previous example would look like this using try!:
+        */
+    /*       fn multiply_try(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+        let first_number = try!(first_number_str.parse::<i32>());
+        let second_number = try!(second_number_str.parse::<i32>());
+
+        Ok(first_number * second_number)
+    }
+        */
 }
