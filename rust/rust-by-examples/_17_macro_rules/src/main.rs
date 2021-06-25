@@ -4,6 +4,8 @@ fn main() {
     overload::main();
     repeat::main();
     DRY::main();
+    DSL::main();
+    variadic_interfaces::main();
 }
 
 mod macro_rules {
@@ -286,5 +288,102 @@ mod DRY {
         test!(add_assign, 1u32, 2u32, 3u32);
         test!(mul_assign, 2u32, 3u32, 6u32);
         test!(sub_assign, 3u32, 2u32, 1u32);
+    }
+
+    pub fn main() {}
+}
+
+mod DSL {
+
+    // Domain Specific Languages (DSLs)
+    /*
+        Domain Specific Languages (DSLs)
+    A DSL is a mini "language" embedded in a Rust macro. It is completely
+    valid Rust because the macro system expands into normal Rust constructs,
+    but it looks like a small language. This allows you to define concise
+    or intuitive syntax for some special functionality (within bounds).
+
+    Suppose that I want to define a little calculator API. I would like to
+    supply an expression and have the output printed to console.
+        */
+
+    macro_rules! calculate {
+            (eval $e:expr) => {{
+                {
+                    let val : usize = $e; // Force types to be integers;
+                    println!("{} = {}", stringify!($e), val);
+                }
+            }};
+        }
+
+    pub fn main() {
+        calculate! {
+            eval 1 + 2   // hehehe `eval` is _not_ a Rust keyword!
+        }
+        calculate! {
+            eval (1 + 2) * (3/4)
+        }
+
+        calculate!(eval 1 + 2);
+    }
+
+    /*
+        This was a very simple example, but much more complex interfaces have been developed, such as lazy_static or clap.
+
+    Also, note the two pairs of braces in the macro. The outer ones are part of the syntax of macro_rules!, in addition to () or [].
+
+
+        */
+}
+
+// Variadic Interfaces
+
+mod variadic_interfaces {
+    /*
+        Variadic Interfaces
+    A variadic interface takes an arbitrary number of arguments. For example,
+    println! can take an arbitrary number of arguments, as determined by the format string.
+
+    We can extend our calculate! macro from the previous section to be variadic:
+        */
+
+    macro_rules! calculate {
+        // The pattern for a single `eval`
+        (eval $e:expr) => {{
+            {
+                let val : usize = $e;  // Force types to be integers
+                println!("{} = {}", stringify!{$e}, val);
+            }
+        }};
+
+        // Decompose multiple `eval`s recursively
+        (eval $e:expr, $(eval $es:expr),+) => {{
+            calculate! { eval $e }
+            calculate! { $(eval $es),+ }
+        }};
+    }
+
+    macro_rules! vecc {
+        ($e:expr) => {{
+            {
+                let mut k = Vec::new();
+                for v in $e.into_iter() {
+                    k.push(v);
+                }
+                k
+            }
+        }};
+    }
+
+    pub fn main() {
+        calculate! { // Look ma! Variadic `calculate!`!
+            eval 1+2,
+            eval 3+4,
+            eval (2*3) +2
+        }
+
+        let p = vecc!([1, 3, 5]);
+
+        println!("vector: {:?}", p)
     }
 }
