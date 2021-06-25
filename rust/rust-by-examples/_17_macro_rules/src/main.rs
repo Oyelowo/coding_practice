@@ -1,6 +1,8 @@
 fn main() {
     macro_rules::main();
     designators::main();
+    overload::main();
+    repeat::main();
 }
 
 mod macro_rules {
@@ -124,4 +126,91 @@ mod designators {
     ty (type)
     vis (visibility qualifier)
         */
+}
+
+/////////////////////////////////////
+// Overload
+/*
+Overload
+Macros can be overloaded to accept different combinations of arguments.
+In that regard, macro_rules! can work similarly to a match block:
+*/
+mod overload {
+    // `test!` will compare `$left` and `$right`
+    // in different ways depending on how you invoke it:
+
+    macro_rules! test {
+        // Arguments don't need to be separated by a comma.
+        // Any template can be used!
+        ($left: expr; and $right: expr) => {
+            println!(
+                "{:?} and {:?} is  {:?}",
+                stringify!($left),
+                stringify!($right),
+                $left && $right
+            )
+        }; // ^ each arm must end with a semicolon.
+        ($left: expr; or $right: expr) => {
+            println!(
+                "{:?} or {:?} is {:?}",
+                stringify!($left),
+                stringify!($right),
+                $left || $right
+            )
+        };
+        ($left: expr; hihi $right: expr) => {
+            println!("Pump it")
+        };
+    }
+
+    macro_rules! assert_equal_custom {
+        ($left: expr, $right: expr) => {
+            if $left == $right {
+                println!("Good job! {:?} is truly equal to {:?}", $left, $right);
+            } else {
+                panic!(
+                    "Bad job!, {:?} and {:?} is {:?}",
+                    stringify!($left),
+                    stringify!($right),
+                    $left == $right
+                );
+            }
+        };
+    }
+
+    pub fn main() {
+        test!(1i32 + 1 == 2i32; and 2i32 * 2 == 4i32);
+        test!(true; or false);
+        test!(4; hihi 4);
+        assert_equal_custom!(5, 5);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Repeat
+/*
+Macros can use + in the argument list to indicate that an argument
+may repeat at least once, or *, to indicate that the argument may repeat zero or more times.
+
+In the following example, surrounding the matcher with $(...),+ will
+match one or more expression, separated by commas. Also note that the semicolon is optional on the last case.
+*/
+
+mod repeat {
+    // `find_min!` will calculate the minimum of any number of arguments.
+
+    macro_rules! find_min {
+        // Base case
+        ($x:expr) => ($x);
+        ($x:expr, $($y:expr),+) => {
+            // Call `find_min!` on the tail `$y`
+            std::cmp::min($x, find_min!($($y),+))
+        }
+    }
+
+    pub fn main() {
+        println!("{}", find_min!(1u32));
+        println!("{}", find_min!(1u32 + 2, 2u32));
+        println!("{}", find_min!(5u32, 2u32 * 3, 4u32));
+    }
 }
