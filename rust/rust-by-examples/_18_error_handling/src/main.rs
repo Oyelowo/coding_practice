@@ -246,8 +246,8 @@ mod combinators_map {
         .map(|food| Cooked(food.0)); */
         /*       let k = food
         .map(|f| Peeled(f))
-        .map(|food| Chopped(food.0))
-        .map(|food| Cooked(food.0)); */
+        .map(|peeled_food| Chopped(peeled_food.0))
+        .map(|chopped_food| Cooked(chopped_food.0)); */
         let k = food
             .map(|f| Peeled(f))
             .map(|Peeled(food)| Chopped(food))
