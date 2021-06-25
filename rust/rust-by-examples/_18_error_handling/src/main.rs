@@ -2,6 +2,7 @@ fn main() {
     panic::main();
     option_and_unwrap::main();
     unpacking_with_question_marks::main();
+    combinators_map::main();
 }
 
 mod panic {
@@ -170,5 +171,113 @@ mod unpacking_with_question_marks {
         assert_eq!(p.work_phone_area_code(), Some(44));
         assert_eq!(p.work_phone_area_code_cumbersome(), Some(44));
         assert_eq!(p.work_phone_area_code_cumbersome2(), Some(44));
+    }
+}
+
+mod combinators_map {
+    /*
+        match is a valid method for handling Options.
+        However, you may eventually find heavy usage tedious,
+        especially with operations only valid with an input. In these cases,
+        combinators can be used to manage control flow in a modular fashion.
+
+    Option has a built in method called map(), a combinator
+    for the simple mapping of Some -> Some and None -> None.
+    Multiple map() calls can be chained together for even more flexibility.
+
+    In the following example, process() replaces all functions previous to it while staying compact.
+        */
+
+    #![allow(dead_code)]
+
+    #[derive(Debug)]
+    enum Food {
+        Apple,
+        Carrot,
+        Potato,
+    }
+
+    #[derive(Debug)]
+    struct Peeled(Food);
+
+    #[derive(Debug)]
+    struct Chopped(Food);
+
+    #[derive(Debug)]
+    struct Cooked(Food);
+
+    // Peeling food. If there isn't any, then return `None`.
+    // Otherwise, return the peeled food.
+    fn peel(food: Option<Food>) -> Option<Peeled> {
+        match food {
+            Some(food) => Some(Peeled(food)),
+            None => None,
+        }
+    }
+
+    // Chopping food. If there isn't any, then return `None`.
+    // Otherwise, return the chopped food.
+    fn chop(peeled: Option<Peeled>) -> Option<Chopped> {
+        match peeled {
+            Some(Peeled(food)) => Some(Chopped(food)),
+            None => None,
+        }
+    }
+
+    fn cook(chopped: Option<Chopped>) -> Option<Cooked> {
+        chopped.map(|Chopped(food)| Cooked(food))
+        //1.  Longer version using destructuring
+        /*         chopped.map(|(food)| {
+            let Chopped(food) = food;
+            Cooked(food)
+        }) */
+        //2. Longer version using inner access of the New type
+        // chopped.map(|food| Cooked(food.0))
+        // 3. Using ?
+        // Some(Cooked(chopped?.0))
+    }
+
+    // A function to peel, chop, and cook food all in sequence.
+    // We chain multiple uses of `map()` to simplify the code.
+    fn process(food: Option<Food>) -> Option<Cooked> {
+        // let k = food.map(|food| Peeled(food));
+        /*         let k = Some(Peeled(food?))
+        .map(|food| Chopped(food.0))
+        .map(|food| Cooked(food.0)); */
+        /*       let k = food
+        .map(|f| Peeled(f))
+        .map(|food| Chopped(food.0))
+        .map(|food| Cooked(food.0)); */
+        let k = food
+            .map(|f| Peeled(f))
+            .map(|Peeled(food)| Chopped(food))
+            .map(|Chopped(food)| Cooked(food));
+        k
+    }
+
+    // Check whether there's food or not before trying to eat it!
+    fn eat(food: Option<Cooked>) {
+        // let p = food?.0;
+        match food {
+            Some(cooked_food) => println!("Let's eat some {:?}!", cooked_food),
+            None => println!("Not cooked, tastes raw!"),
+        }
+    }
+
+    pub fn main() {
+        use Food::*;
+        // let apple = Some(Food::Apple);
+        let apple = Some(Apple);
+        let carrot = Some(Carrot);
+        let potato: Option<Food> = None;
+
+        let cooked_apple = cook(chop(peel(apple)));
+        let cooked_carrot = cook(chop(peel(carrot)));
+        // Let's try the simpler looking `process()` now.
+        let cooked_potato = process(potato);
+
+        eat(cooked_apple);
+        eat(cooked_carrot);
+        eat(cooked_potato);
     }
 }
