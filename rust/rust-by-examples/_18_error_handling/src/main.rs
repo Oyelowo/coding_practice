@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 fn main() {
     panic::main();
     option_and_unwrap::main();
@@ -9,8 +10,196 @@ fn main() {
     multiple_error_types::main();
     wrapping_errors::main();
     iterating_over_results::main();
+    println!("oylowo: {}", "oyelowo".len());
+    println!("oylowo: {}", "oyelowo".chars().count());
+
+    println!("öylowo: {}", "öyelowo".len());
+    println!("öylowo: {}", "öyelowo".chars().count());
+    println!("oylowo: {:?}", "öyelowo".chars());
+
+    let a = vec!["a", "b", "c", "d", "e"];
+    let b = ["a", "b"];
+    coo(&b);
+    coo(&a);
+
+    let mut a = 12;
+    let mut b = a;
+    {
+        let c = &mut a;
+        b = 23;
+        *c = 8;
+        println!(" c: {:?}", c);
+    }
+    println!("a: {:?}, b: {:p}", a, &b);
+
+    let p: MyStruct = "anything".into();
+    println!("s: {:?}", p.s);
+
+    let h = something(4).is_ok();
+
+    let k = SpiderRobot {
+        hardware_error_count: Cell::new(3),
+        some_str: std::cell::RefCell::new("oyelowo".to_string()),
+    };
+
+    let c = k.hardware_error_count.get();
+    let p = k.hardware_error_count.set(c + 5);
+    k.some_str.borrow_mut().push_str("another");
+
+    println!("1k{:?}", k);
+    let mut k = SpiderRobot2 {
+        hardware_error_count: 3,
+        some_str: "oyelowo".into(),
+    };
+    let v = k.hardware_error_count;
+    let m = k.hardware_error_count + 1;
+    k.some_str.push_str("erere");
+    println!("2k{:?}", k);
+    println!("m{:?}", m);
+
+    let g = vec![4];
+    let g = std::cell::RefCell::new(g);
+    g.borrow_mut().push(4);
+    println!("{:?}", g);
+
+    test_str(String::from("oyelowo"));
+    let k: Year = 43.into();
+    let k = Year::from(4);
+
+    let mut k = RangeI32(0, 60, 5);
+    println!("the main {}", k.next().unwrap());
+    println!("the main {}", k.next().unwrap());
+    println!("the main {}", k.next().unwrap());
+    println!("the main {}", k.next().unwrap());
+
+    /* for i in RangeI32(3, 6900000, 6) {
+        println!("{}", i);
+    } */
+}
+use std::borrow::Cow;
+fn get_name() -> Cow<'static, str> {
+    std::env::var("USER")
+        .map(|v| Cow::Owned(v))
+        .unwrap_or(Cow::Borrowed("whoever you are"))
 }
 
+fn get_name2() -> Cow<'static, str> {
+    std::env::var("USER")
+    .map(Cow::Owned)
+    .unwrap_or_else(|_|Cow::Borrowed("whoever you are"))
+}
+fn get_name3() -> Cow<'static, str> {
+    std::env::var("USER")
+        .map(|v| v.into())
+        .unwrap_or("whoever you are".into())
+}
+
+
+
+
+type Start = i32;
+type End = i32;
+type Step = i32;
+struct RangeI32(Start, End, Step);
+
+impl Display for RangeI32 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl Iterator for RangeI32 {
+    type Item = i32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.0 >= self.1 {
+            return None;
+        }
+        let result = self.0;
+        self.0 += self.2;
+        Some(result)
+    }
+}
+
+fn test_year(n: i32) -> Year {
+    n.into()
+}
+
+struct Year(i32);
+impl From<i32> for Year {
+    fn from(n: i32) -> Self {
+        Self(n)
+    }
+}
+
+struct S<T: ?Sized> {
+    b: Box<T>,
+}
+
+fn test_str(strr: String) {
+    println!("nothing")
+}
+use std::cell::{Cell, Ref};
+
+#[derive(Debug)]
+pub struct SpiderRobot {
+    hardware_error_count: Cell<u32>,
+    some_str: std::cell::RefCell<String>,
+}
+
+#[derive(Debug)]
+pub struct SpiderRobot2 {
+    hardware_error_count: u32,
+    some_str: String,
+}
+
+fn test_from_cust() -> MyStruct {
+    "new thing".into()
+}
+
+fn something(n: u32) -> Result<&'static str, &'static str> {
+    if n > 3 {
+        Ok("Greater than 3")
+    } else {
+        Err("ffd")
+    }
+}
+struct MyStruct {
+    s: String,
+    name: String,
+}
+
+impl From<&'static str> for MyStruct {
+    fn from(stri: &'static str) -> Self {
+        Self {
+            s: stri.to_string(),
+            name: "Oyelowo".to_string(),
+        }
+    }
+}
+
+use std::fmt::{write, Debug};
+use std::{
+    error::Error,
+    fmt::{self, Display, Write},
+    io::{self, BufRead},
+};
+/// Read integers from a text file.
+/// The file should have one number on each line.
+fn read_numbers(
+    file: &mut dyn BufRead,
+) -> Result<Vec<i64>, Box<dyn std::error::Error + Send + Sync + 'static>> {
+    let mut numbers = vec![];
+    for line_result in file.lines() {
+        let line = line_result?;
+        numbers.push(line.parse()?);
+    }
+    Ok(numbers)
+}
+
+fn coo(m: &[&str]) {
+    println!("{}", m.join(","));
+}
 mod panic {
     /*
         panic
