@@ -11,6 +11,13 @@ use waker_fn::waker_fn;
 
 fn main() {
     println!("Hello, world!");
+    let k = <[_]>::into_vec(Box::new([4, 6, 6]));
+    let s: Box<[i32]> = Box::new([10, 40, 30]);
+    // let x: Vec<i32> = s.into_vec::<Vec<i32>>();
+    let k = vec![4,5];
+    let p = "54";
+    let l = <&str>::to_string(&"rer");
+
 }
 
 pub struct SpawnBlocking<T>(Arc<Mutex<Shared<T>>>);
