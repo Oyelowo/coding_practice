@@ -8,6 +8,40 @@ const SCREEN_WIDTH: i32 = 120;
 const SCREEN_HEIGHT: i32 = 70;
 const LIMIT_FPS: i32 = 20; // 20 frames-per-second maximum
 
+// size of the map
+const MAP_WIDTH: i32 = 80;
+const MAP_HEIGHT: i32 = 45;
+
+const COLOR_DARK_WALL: Color = Color { r: 0, g: 0, b: 100 };
+const COLOR_DARK_GROUND: Color = Color {
+    r: 50,
+    g: 50,
+    b: 150,
+};
+
+/// A tile of the map and its properties
+#[derive(Clone, Copy, Debug)]
+struct Tile {
+    blocked: bool,
+    block_sight: bool,
+}
+
+impl Tile {
+    pub fn empty() -> Self {
+        Self {
+            blocked: false,
+            block_sight: false,
+        }
+    }
+
+    pub fn wall() -> Self {
+        Self {
+            blocked: true,
+            block_sight: true,
+        }
+    }
+}
+
 struct Tcod {
     root: Root,
     con: Offscreen,
