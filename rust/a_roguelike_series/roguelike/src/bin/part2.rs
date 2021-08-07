@@ -49,6 +49,7 @@ struct Tcod {
 
 /// This is a generic object: the player, a monster, an item, the stairs...
 /// It's always represented by a character on screen.
+#[derive(Debug)]
 struct Object {
     x: i32,
     y: i32,
@@ -72,6 +73,18 @@ impl Object {
         console.set_default_foreground(self.color);
         console.put_char(self.x, self.y, self.char, BackgroundFlag::None);
     }
+}
+
+type Map = Vec<Vec<Tile>>;
+
+struct Game {
+    map: Map,
+}
+
+fn make_map() -> Map {
+    // fill map with "unblocked" tiles
+    let mut map: Map = vec![vec![Tile::empty(); MAP_HEIGHT as usize]; MAP_WIDTH as usize];
+    map
 }
 
 fn handle_keys(tcod: &mut Tcod, player: &mut Object) -> bool {
