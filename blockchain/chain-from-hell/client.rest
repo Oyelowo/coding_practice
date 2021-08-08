@@ -1,0 +1,5 @@
+GET http://localhost:5000/mine
+
+###
+    ### POST /mine
+GET http://localhost:5000/chain
