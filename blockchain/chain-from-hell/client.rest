@@ -1,5 +1,14 @@
 GET http://localhost:5000/mine
 
 ###
-    ### POST /mine
-GET http://localhost:5000/chain
+GET http://localhost:5000/chain HTTP/1.1
+
+### 
+POST http://localhost:5000/transactions/new HTTP/1.1
+content-type: application/json
+
+{
+    "sender": "d4ee26eee15148ee92c6cd394edd974e",
+    "recipient": "oyelowo-address 2",
+    "amount": 5,
+}
