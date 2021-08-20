@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/oyelowo/Desktop/PERSONAL/coding_practice/CLOUD/CloudNativeArchitecture/course_1","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

@@ -1,0 +1,11 @@
+# Vagrant:
+
+# Inspect available vagrant boxes 
+vagrant status 
+
+# create a vagrant box using the Vagrantfile in the current directory
+vagrant up
+
+# SSH into the vagrant box
+# Note: this command uses the .vagrant folder to identify the details of the vagrant box
+vagrant ssh
