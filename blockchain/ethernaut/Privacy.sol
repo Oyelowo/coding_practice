@@ -54,18 +54,20 @@ contract AttactPrivacy {
 // SPDX-License-Identifier: MIT
 // pragma solidity ^0.6.0;
 
+
+// 8bits = 1byte
 contract Privacy {
   // 1byte... Total=1byte...fits in slot 0
   bool public locked = true;
-  // 32bytes... Total=32byte...fits in slot 1
+  // 256bits = 32bytes... Total=32byte...fits in slot 1. Can't fit anymore in slot 0
   uint256 public ID = block.timestamp;
-  // 8 bytes... Total+=8bytes = 8...fits in slot 2
+  // 8bits = 1byte... Total+= 1 byte = 1...fits in slot 2
   uint8 private flattening = 10;
-  // 8 bytes... Total+=8bytes = 16...fits in slot 2
+  // 8bits = 1byte... Total+= 1 byte = 2...fits in slot 2
   uint8 private denomination = 255;
-  // 16bytes... Total+=16bytes = 32...fits in slot 2
+  // 16bits = 2bytes... Total+= 2 bytes = 4bytes(less than 32 bytes)...fits in slot 2
   uint16 private awkwardness = uint16(now);
-  // 32*3 bytes... Total=1byte...fits in slot 3,4,5 (therefore data[2] is slot 5)
+  // 32*3 bytes... Total=1byte...fits in slot 3,4,5 (therefore data[2] is slot 5). None can fit in slot 2 anymore cos it will then be more than 32bytes
   bytes32[3] private data;
 
   constructor(bytes32[3] memory _data) public {
