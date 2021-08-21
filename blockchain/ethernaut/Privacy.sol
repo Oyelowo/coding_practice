@@ -1,5 +1,29 @@
 pragma solidity ^0.6.0;
 
+/* 
+Privacy
+Level completed!
+Difficulty 8/10
+
+The creator of this contract was careful enough to protect the sensitive areas of its storage.
+
+Unlock this contract to beat the level.
+
+Things that might help:
+
+Understanding how storage works
+Understanding how parameter parsing works
+Understanding how casting works
+Tips:
+
+Remember that metamask is just a commodity. Use another tool if it is presenting problems. Advanced gameplay could involve using remix, or your own web3 provider.
+Nothing in the ethereum blockchain is private. The keyword private is merely an artificial construct of the Solidity language. Web3's getStorageAt(...) can be used to read anything from storage. It can be tricky to read what you want though, since several optimization rules and techniques are used to compact the storage as much as possible.
+
+It can't get much more complicated than what was exposed in this level. For more, check out this excellent article by "Darius": How to read Ethereum contract storage: https://medium.com/aigang-network/how-to-read-ethereum-contract-storage-44252c8af925
+
+Sources
+ */
+
 
 /*
 Nothing is private on the blockchain:
