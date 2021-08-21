@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 // Solution to reentrancy can be found in the screenshot.
 /*
 1. reentrancy guard: https://docs.openzeppelin.com/contracts/2.x/api/utils#ReentrancyGuard
-2. pull payment: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
+2. doing pull payments instead of push payments: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
 This is considered payment best practise in solidity.
 3. Use the Checks-Effects-Interactions Pattern
 
@@ -57,7 +57,7 @@ contract Reentrance {
   function balanceOf(address _who) public view returns (uint balance) {
     return balances[_who];
   }
-  function withdraw(uint _amount) public {
+  function unsafeWithdraw(uint _amount) public {
     if(balances[msg.sender] >= _amount) {
     
     // There are 3 ways of moving money in solidity, `.send`, `.transfer` and `.call`.
