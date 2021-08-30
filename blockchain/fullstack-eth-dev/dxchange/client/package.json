@@ -1,0 +1,31 @@
+{
+  "name": "de-xchange",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mikro-orm/core": "^4.5.9",
+    "@mikro-orm/mongodb": "^4.5.9",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.0",
+    "morgan": "^1.10.0",
+    "next": "11.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "tailwindcss": "^2.2.7",
+    "web3": "^1.5.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/react": "17.0.19",
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.1.0",
+    "typescript": "4.3.5"
+  }
+}

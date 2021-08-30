@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  client:
+    #container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      # target: development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    command: npm run dev
+
+  server:
+    #container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      # target: development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - 3001:3001
+    command: npm run watch
+
+  mongodb:
+    image: mongo:latest
+    #container_name: mongodb
+    restart: always
+   # environment:
+    #  MONGO_INITDB_DATABASE: admin
+    #  MONGO_INITDB_ROOT_USERNAME: root
+    #  MONGO_INITDB_ROOT_PASSWORD: password1234
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+    # - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+    networks:
+      - node-webapp-network
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    # environment:
+    #  ME_CONFIG_MONGODB_ADMINUSERNAME: root
+    #  ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    #  ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
+
+volumes:
+  mongodb_data_container:
+
+networks:
+  node-webapp-network:
+    driver: bridge
+

@@ -1,0 +1,59 @@
+{
+  "name": "blogapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Oyelowo Oyedayo",
+  "license": "MIT",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "tsc": "tsc --init",
+    "kill:port3001": "kill -9 $(lsof -t -i:3001)",
+    "watch:dev": "ts-node-dev --respawn --transpileOnly index.ts",
+    "watch:prod": "concurrently \"tsc -w\" \"node ./index.js\"",
+    "app:dev": "yarn watch:dev && cd ../frontend && yarn start",
+    "build:ui": "rm -rf build && cd ../frontend && yarn build --prod && cp -r build ../backend/",
+    "deploy": "git push heroku master",
+    "deploy:full": "yarn build:ui && git add . && git commit -m uibuild && git push && yarn deploy",
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint .",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.6.3",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0",
+    "typescript": "^3.5.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.5",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.0",
+    "@types/jest": "^24.0.15",
+    "@types/lodash": "^4.14.136",
+    "@types/mongoose": "^5.5.7",
+    "@types/mongoose-unique-validator": "^1.0.1",
+    "@types/morgan": "^1.7.35",
+    "@types/node": "^12.0.12",
+    "@types/supertest": "^2.0.8",
+    "cross-env": "^5.2.0",
+    "eslint": "^6.0.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.8.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0.2",
+    "ts-node-dev": "^1.0.0-pre.40"
+  }
+}

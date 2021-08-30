@@ -1,0 +1,17 @@
+####
+@baseUrl=http://localhost:3001/api/v1
+
+###
+GET {{baseUrl}}/blogs
+
+###
+POST {{baseUrl}}/blogs
+Content-Type: application/json
+
+{ 
+    "author":"oyelowo", 
+    "title": "Big Code",
+    "url": "www.cool.guy",
+    "likes": 10203,
+    "upvotes": 4532
+}
