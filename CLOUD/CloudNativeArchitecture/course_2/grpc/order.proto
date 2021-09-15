@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+message EquipmentDetails {
+    string name = 1;
+    string id = 2;
+}
+
+enum OrderStatus {
+    RESERVED = 1;
+    PAID = 2;
+    PENDING = 3;
+    CANCELLED = 4;
+    READY = 5;
+    SHIPPING = 6;
+    DELIVERED = 7;
+}
+
+message OrderRequest = {
+    string user_id = 1;
+    EquipmentDetails details = 4;
+}
+
+message OrderResponse = {
+    string user_id = 1;
+    OrderStatus status = 2;
+    string created_at = 3;
+    EquipmentDetails details = 4;
+}
+
+service OrderService {
+    rpc Create(OrderRequest) returns (OrderResponse);
+}
