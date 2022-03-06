@@ -111,6 +111,8 @@ describe("tic-tac-toe", () => {
       // we use this to make sure we definitely throw an error
       chai.assert(false, "should've failed but didn't ");
     } catch (error) {
+      // These errors are indexed from custom enum error from my rust backend starting from
+      // 6000, 6001, 6002 ...6xxx
       expect(error.code).to.equal(6003); // 6003 stands for NotYetPlayersTurn created as custom error in my program in rust
     }
 
@@ -148,6 +150,27 @@ describe("tic-tac-toe", () => {
       chai.assert(false, "should've failed but didn't");
     } catch (error) {
       expect(error.code).to.equal(6002); // 6002 stands for OutOfBoundError
+    }
+
+    //  Cant play on already existing tiles
+    try {
+      await play(
+        program,
+        gameKeypair.publicKey,
+        playerTwo,
+        { row: 0, column: 1 }, // out of bounds row
+        4,
+        { active: {} },
+        [
+          [null, { x: {} }, null],
+          [{ o: {} }, null, null],
+          [null, null, null],
+        ]
+      );
+      // we use this to make sure we definitely throw an error
+      chai.assert(false, "should've failed but didn't");
+    } catch (error) {
+      expect(error.code).to.equal(6001); // 6002 stands for OutOfBoundError
     }
   });
 });

@@ -68,10 +68,10 @@ pub struct Tile {
 
 #[error_code]
 pub enum TicTacToeError {
-    GameAlreadyOver,
-    TileAlreadySet,
-    TileOutOfBounds,
-    NotPlayersTurn,
+    GameAlreadyOver, // this will be error code: 6000  ...starting from index 0
+    TileAlreadySet,  // this will be error code: 6001
+    TileOutOfBounds, // this will be error code: 6002
+    NotPlayersTurn,  // this will be error code: 6003
 }
 
 impl Default for GameState {
