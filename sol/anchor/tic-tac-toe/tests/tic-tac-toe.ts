@@ -119,11 +119,11 @@ describe("tic-tac-toe", () => {
       program,
       gameKeypair.publicKey,
       playerOne,
-      { row: 0, column: 0 },
+      { row: 0, column: 1 },
       2,
       { active: {} },
       [
-        [{ x: {} }, null, null],
+        [null, { x: {} }, null],
         [null, null, null],
         [null, null, null],
       ]
