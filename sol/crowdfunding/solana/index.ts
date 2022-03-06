@@ -19,12 +19,12 @@ export async function setPayerAndBlockhashTransaction(instructions) {
     transaction.add(element);
   });
   transaction.feePayer = wallet.publicKey;
-  let hash = await connection.getRecentBlockhash();
+  let hash = await connection.getLatestBlockhash();
   transaction.recentBlockhash = hash.blockhash;
   return transaction;
 }
 
-export async function signAndSendTransaction(transaction) {
+export async function signAndSendTransaction(transaction: Transaction) {
   try {
     console.log("start signAndSendTransaction");
     let signedTrans = await wallet.signTransaction(transaction);
@@ -68,11 +68,15 @@ async function checkWallet() {
   }
 }
 
-export async function createCampaign(name, description, image_link) {
+export async function createCampaign(
+  name: string,
+  description: string,
+  image_link: string
+) {
   await checkWallet();
 
   const SEED = "abcdef" + Math.random().toString();
-  let newAccount = await PublicKey.createWithSeed(
+  let newAccountPubKey = await PublicKey.createWithSeed(
     wallet.publicKey,
     SEED,
     programId
@@ -97,7 +101,7 @@ export async function createCampaign(name, description, image_link) {
     fromPubkey: wallet.publicKey,
     basePubkey: wallet.publicKey,
     seed: SEED,
-    newAccountPubkey: newAccount,
+    newAccountPubkey: newAccountPubKey,
     lamports: lamports,
     space: data.length,
     programId: programId,
@@ -105,7 +109,7 @@ export async function createCampaign(name, description, image_link) {
 
   const instructionTOOurProgram = new TransactionInstruction({
     keys: [
-      { pubkey: newAccount, isSigner: false, isWritable: true },
+      { pubkey: newAccountPubKey, isSigner: false, isWritable: true },
       { pubkey: wallet.publicKey, isSigner: true },
     ],
     programId: programId,
