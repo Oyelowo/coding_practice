@@ -1,4 +1,19 @@
 fn main() {
+    loop_label();
+    println!("============================================");
+    println!("============================================");
+    loop_infinite_return();
+}
+
+fn loop_infinite_return() {
+    let n = loop {
+        break 123;
+    };
+
+    println!("{n}");
+}
+
+fn loop_label() {
     'outermost: for x in 0.. {
         println!("inner0: x: {x}");
         for y in 0.. {
