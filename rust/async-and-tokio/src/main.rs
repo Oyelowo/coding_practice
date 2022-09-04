@@ -1,7 +1,10 @@
 use std::ops::SubAssign;
 
 use mini_redis::{Connection, Frame};
-use tokio::net::{TcpListener, TcpStream};
+use tokio::{
+    net::{TcpListener, TcpStream},
+    task,
+};
 
 #[tokio::main]
 async fn main() {
@@ -10,7 +13,12 @@ async fn main() {
     loop {
         // The second item contains the IP and port of the new connection.
         let (socket, _) = listener.accept().await.unwrap();
-        process(socket).await;
+
+        // A new tasj is spawned for eacg inbound socket. The socket is
+        // moved to the new task and processed there.
+        tokio::spawn(async move {
+            process(socket).await;
+        });
     }
 }
 
