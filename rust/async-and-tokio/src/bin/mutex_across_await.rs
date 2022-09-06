@@ -17,15 +17,39 @@ use tokio::task;
     do_async().await;
 } // Lock goes out of scope here */
 
-// This will work becuase, we force the lock to be released after the scope `{}` before
+// Alternative one
+/* // This will work becuase, we force the lock to be released after the scope `{}` before
 // any .await is ever called
 async fn increment_and_do_stuff(mutex: &Mutex<i32>) {
     {
+        // Using blocks to free the lock before it gets to a `.await` call
+        // which the state machine will not be able to store for resumption later,
+        // as it can resume the task from where it started on another thread.
         let mut lock: MutexGuard<i32> = mutex.lock();
         *lock += 1;
-    }
+    } // Lock goes out of scope here
     do_async().await;
-} // Lock goes out of scope here
+} */
+
+struct CounterGuard<'a> {
+    counter: &'a Mutex<i32>,
+}
+
+impl<'a> CounterGuard<'a> {
+    // This has to be not async
+    fn increment(self) {
+        // Using normal `non-async` function to free the lock before it gets to a `.await` call
+        // which the state machine will not be able to store for resumption later,
+        // as it can resume the task from where it started on another thread.
+        let mut lock = self.counter.lock();
+        *lock += 1;
+    } // Lock goes out of scope here
+}
+// Alternative two
+async fn increment_and_do_stuff(mutex: &Mutex<i32>) {
+    CounterGuard { counter: mutex }.increment(); // Lock goes out of scope here
+    do_async().await;
+}
 
 async fn do_async() {
     println!("Async here");
