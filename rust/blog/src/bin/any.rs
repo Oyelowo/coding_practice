@@ -28,10 +28,11 @@ struct Goat;
 fn doit(mut any: Box<dyn Any>) -> Box<dyn Any> {
     if let Some(num) = any.downcast_mut::<i32>() {
         *num += 1;
-    } else if let Some(s) = any.downcast_ref::<String>() {
-        println!("{s:?}");
+    // } else if let Some(s) = any.downcast_ref::<String>() {
+    //     println!("{s:?}");
     } else if let Some(x) = any.downcast_mut::<String>() {
-        x.push_str("string");
+        // *x += "string";
+        x.push_str("opepep");
     } else if let Some(s) = any.downcast_ref::<String>() {
         println!("{s}");
     }
