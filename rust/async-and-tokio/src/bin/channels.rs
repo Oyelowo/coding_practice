@@ -89,7 +89,7 @@ async fn basics() {
 type Key = String;
 type Responder<T> = oneshot::Sender<mini_redis::Result<T>>;
 #[derive(Debug)]
-enum Command {
+enum Command {b
     Get {
         key: Key,
         resp: Responder<Option<Bytes>>,
