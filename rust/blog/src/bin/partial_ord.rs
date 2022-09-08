@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, AddAssign};
 
 fn main() {
     let a = Point { x: 34, y: 34 };
@@ -9,7 +9,9 @@ fn main() {
     let b = Point { x: 34, y: 34 };
     let res2 = &a + &b;
 
-    
+    let mut a = Point { x: 34, y: 34 };
+    let b = Point { x: 34, y: 34 };
+    a += b;
 }
 
 // trait PartialEq<Rhs = Self>: PartialEq<Rhs>
@@ -22,6 +24,13 @@ fn main() {
 struct Point {
     x: i32,
     y: i32,
+}
+
+impl AddAssign for Point {
+    fn add_assign(&mut self, rhs: Self) {
+        self.x = rhs.x;
+        self.y = rhs.y;
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
