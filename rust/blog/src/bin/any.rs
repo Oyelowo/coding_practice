@@ -11,7 +11,9 @@ fn main() {
         Box::new(Goat),
     ];
 
+    
     let k = vv.into_iter().map(doit).collect::<Vec<_>>();
+
 
     for p in k {
         // if p.downcast::<i32>().unwrap() == 2i32 {

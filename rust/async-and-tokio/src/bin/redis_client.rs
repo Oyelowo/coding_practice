@@ -8,12 +8,14 @@ async fn main() {
     // Spawn two tasks, one gets a key , the other sets a key
 
     let t1 = tokio::spawn(async move {
-        let res = client.get("hello").await;
+        let res = client.get("lowo2").await;
+        res
     });
-    let t2 = tokio::spawn(async move {
-        client.set("hello", "world".into()).await;
-    });
+    // let t2 = tokio::spawn(async move {
+    //     client.set("hello", "world".into()).await;
+    // });
 
-    t1.await.unwrap();
-    t2.await.unwrap();
+    let d = t1.await.unwrap().unwrap();
+    println!("ddd = {d:?}");
+    // t2.await.unwrap();
 }
