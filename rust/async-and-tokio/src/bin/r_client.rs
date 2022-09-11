@@ -48,10 +48,11 @@ async fn main() {
     let getter = tokio::spawn(async move {
         let (txo, rx0) = oneshot::channel::<String>();
         let msg = Command::Get {
-            key: "lowo".into(),
+            key: "oye".into(),
             response_transmitter: txo,
         };
         let t1 = tx2.send(msg).await;
+        dbg!(rx0.await.ok());
     });
 
     // let t1 = tx
