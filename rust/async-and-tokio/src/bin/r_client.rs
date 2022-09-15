@@ -55,13 +55,6 @@ async fn main() {
         dbg!(rx0.await.ok());
     });
 
-    println!("run");
-    tokio::spawn(async move {
-        sender.await;
-        getter.await;
-    });
-    println!("none");
-
     // let t1 = tx
     //     .send(Command::Set {
     //         key: "lowo".into(),
@@ -88,17 +81,19 @@ async fn main() {
                 response_transmitter,
             } => {
                 // dbg!(key);
-                response_transmitter.send("From a getter".to_string()).ok();
+                response_transmitter.send("From a getter Responder".to_string()).ok();
             }
             Command::Set {
                 key,
                 value,
                 response_transmitter,
             } => {
-                let msg = format!("I got this buddy setter: {key} => {value}");
+                let msg = format!("I got this buddy setter Responder: {key} => {value}");
                 response_transmitter.send(msg).ok();
             }
         }
     }
     // println!("GOT => {got:?} ");
+    // sender.await;
+    // getter.await;
 }
