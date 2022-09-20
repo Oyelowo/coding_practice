@@ -1,0 +1,25 @@
+[package]
+name = "brainfuck_compilers"
+version = "0.1.0"
+authors = ["pretzelhammer <7769424+pretzelhammer@users.noreply.github.com>"]
+edition = "2018"
+
+[[bin]]
+name = "bf_interpreter"
+path = "src/interpreter.rs"
+
+[[bin]]
+name = "bf_to_x86_64_compiler"
+path = "src/x86_64/compiler.rs"
+
+[[bin]]
+name = "bf_to_aarch64_compiler"
+path = "src/aarch64/compiler.rs"
+
+[[bin]]
+name = "bf_to_wasm32_wasi_compiler"
+path = "src/wasm32_wasi/compiler.rs"
+
+[[bin]]
+name = "bf_to_llvm_ir_compiler"
+path = "src/llvm_ir/compiler.rs"
