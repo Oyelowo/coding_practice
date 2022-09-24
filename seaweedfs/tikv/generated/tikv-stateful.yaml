@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: advanced-tidb-tikv
+  namespace: default
+  uid: 52bdbcd0-f124-4432-9f5e-69147ec18947
+  resourceVersion: '148314'
+  generation: 1
+  creationTimestamp: '2022-09-23T21:41:58Z'
+  labels:
+    app.kubernetes.io/component: tikv
+    app.kubernetes.io/instance: advanced-tidb
+    app.kubernetes.io/managed-by: tidb-operator
+    app.kubernetes.io/name: tidb-cluster
+  annotations:
+    pingcap.com/last-applied-configuration: >-
+      {"replicas":3,"selector":{"matchLabels":{"app.kubernetes.io/component":"tikv","app.kubernetes.io/instance":"advanced-tidb","app.kubernetes.io/managed-by":"tidb-operator","app.kubernetes.io/name":"tidb-cluster"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"app.kubernetes.io/component":"tikv","app.kubernetes.io/instance":"advanced-tidb","app.kubernetes.io/managed-by":"tidb-operator","app.kubernetes.io/name":"tidb-cluster"},"annotations":{"prometheus.io/path":"/metrics","prometheus.io/port":"20180","prometheus.io/scrape":"true"}},"spec":{"volumes":[{"name":"annotations","downwardAPI":{"items":[{"path":"annotations","fieldRef":{"fieldPath":"metadata.annotations"}}]}},{"name":"config","configMap":{"name":"advanced-tidb-tikv-3831336","items":[{"key":"config-file","path":"tikv.toml"}]}},{"name":"startup-script","configMap":{"name":"advanced-tidb-tikv-3831336","items":[{"key":"startup-script","path":"tikv_start_script.sh"}]}}],"containers":[{"name":"tikv","image":"pingcap/tikv:v6.1.0","command":["/bin/sh","/usr/local/bin/tikv_start_script.sh"],"ports":[{"name":"server","containerPort":20160,"protocol":"TCP"}],"env":[{"name":"NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"CLUSTER_NAME","value":"advanced-tidb"},{"name":"HEADLESS_SERVICE_NAME","value":"advanced-tidb-tikv-peer"},{"name":"CAPACITY","value":"0"},{"name":"TZ","value":"UTC"}],"resources":{},"volumeMounts":[{"name":"annotations","readOnly":true,"mountPath":"/etc/podinfo"},{"name":"tikv","mountPath":"/var/lib/tikv"},{"name":"config","readOnly":true,"mountPath":"/etc/tikv"},{"name":"startup-script","readOnly":true,"mountPath":"/usr/local/bin"}],"imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}},"volumeClaimTemplates":[{"metadata":{"name":"tikv","creationTimestamp":null},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"100Gi"}}},"status":{}}],"serviceName":"advanced-tidb-tikv-peer","podManagementPolicy":"Parallel","updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":3}}}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: tikv
+      app.kubernetes.io/instance: advanced-tidb
+      app.kubernetes.io/managed-by: tidb-operator
+      app.kubernetes.io/name: tidb-cluster
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: tikv
+        app.kubernetes.io/instance: advanced-tidb
+        app.kubernetes.io/managed-by: tidb-operator
+        app.kubernetes.io/name: tidb-cluster
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: '20180'
+        prometheus.io/scrape: 'true'
+    spec:
+      volumes:
+        - name: annotations
+          downwardAPI:
+            items:
+              - path: annotations
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.annotations
+            defaultMode: 420
+        - name: config
+          configMap:
+            name: advanced-tidb-tikv-3831336
+            items:
+              - key: config-file
+                path: tikv.toml
+            defaultMode: 420
+        - name: startup-script
+          configMap:
+            name: advanced-tidb-tikv-3831336
+            items:
+              - key: startup-script
+                path: tikv_start_script.sh
+            defaultMode: 420
+      containers:
+        - name: tikv
+          image: pingcap/tikv:v6.1.0
+          command:
+            - /bin/sh
+            - /usr/local/bin/tikv_start_script.sh
+          ports:
+            - name: server
+              containerPort: 20160
+              protocol: TCP
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: CLUSTER_NAME
+              value: advanced-tidb
+            - name: HEADLESS_SERVICE_NAME
+              value: advanced-tidb-tikv-peer
+            - name: CAPACITY
+              value: '0'
+            - name: TZ
+              value: UTC
+          resources: {}
+          volumeMounts:
+            - name: annotations
+              readOnly: true
+              mountPath: /etc/podinfo
+            - name: tikv
+              mountPath: /var/lib/tikv
+            - name: config
+              readOnly: true
+              mountPath: /etc/tikv
+            - name: startup-script
+              readOnly: true
+              mountPath: /usr/local/bin
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: tikv
+        creationTimestamp: null
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  serviceName: advanced-tidb-tikv-peer
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 3
+  revisionHistoryLimit: 10

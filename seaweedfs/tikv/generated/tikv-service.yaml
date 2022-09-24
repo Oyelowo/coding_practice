@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: advanced-tidb-tikv-peer
+  namespace: default
+  uid: 50c96879-fde1-4edd-81c4-2024be9bfdca
+  resourceVersion: '148109'
+  creationTimestamp: '2022-09-23T21:41:58Z'
+  labels:
+    app.kubernetes.io/component: tikv
+    app.kubernetes.io/instance: advanced-tidb
+    app.kubernetes.io/managed-by: tidb-operator
+    app.kubernetes.io/name: tidb-cluster
+    app.kubernetes.io/used-by: peer
+  annotations:
+    pingcap.com/last-applied-configuration: >-
+      {"ports":[{"name":"peer","protocol":"TCP","port":20160,"targetPort":20160}],"selector":{"app.kubernetes.io/component":"tikv","app.kubernetes.io/instance":"advanced-tidb","app.kubernetes.io/managed-by":"tidb-operator","app.kubernetes.io/name":"tidb-cluster"},"clusterIP":"None","publishNotReadyAddresses":true}
+status:
+  loadBalancer: {}
+spec:
+  ports:
+    - name: peer
+      protocol: TCP
+      port: 20160
+      targetPort: 20160
+  selector:
+    app.kubernetes.io/component: tikv
+    app.kubernetes.io/instance: advanced-tidb
+    app.kubernetes.io/managed-by: tidb-operator
+    app.kubernetes.io/name: tidb-cluster
+  clusterIP: None
+  clusterIPs:
+    - None
+  type: ClusterIP
+  sessionAffinity: None
+  publishNotReadyAddresses: true
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  internalTrafficPolicy: Cluster

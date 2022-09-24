@@ -1,0 +1,3 @@
+#V2
+CREATE author:john SET\n	                name.first = 'John',\n                    name.last = 'Adams',\n                    name.full = string::join(' ', name.first, name.last),\n                    age = 29,\n                    admin = true,\n                    signup_at = time::now();
+CREATE company:surrealdb SET name = 'SurrealDB', cofounders = [person:tobie, person:jaime];\n

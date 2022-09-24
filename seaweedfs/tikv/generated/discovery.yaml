@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: advanced-tidb-discovery
+  namespace: default
+  uid: 4de731e1-cbfb-4f21-bf5e-d91f8d51360a
+  resourceVersion: '147946'
+  generation: 2
+  creationTimestamp: '2022-09-23T21:40:59Z'
+  labels:
+    app.kubernetes.io/component: discovery
+    app.kubernetes.io/instance: advanced-tidb
+    app.kubernetes.io/managed-by: tidb-operator
+    app.kubernetes.io/name: tidb-cluster
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+    pingcap.com/last-applied-configuration: >-
+      {"containers":[{"name":"discovery","image":"pingcap/tidb-operator:v1.3.8","command":["/usr/local/bin/tidb-discovery"],"ports":[{"name":"discovery","containerPort":10261,"protocol":"TCP"},{"name":"proxy","containerPort":10262,"protocol":"TCP"}],"env":[{"name":"MY_POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"TZ","value":"UTC"},{"name":"TC_NAME","value":"advanced-tidb"}],"resources":{},"imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst","serviceAccountName":"advanced-tidb-discovery"}
+    pingcap.com/last-applied-podtemplate: >-
+      {"containers":[{"name":"discovery","image":"pingcap/tidb-operator:v1.3.8","command":["/usr/local/bin/tidb-discovery"],"ports":[{"name":"discovery","containerPort":10261,"protocol":"TCP"},{"name":"proxy","containerPort":10262,"protocol":"TCP"}],"env":[{"name":"MY_POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"TZ","value":"UTC"},{"name":"TC_NAME","value":"advanced-tidb"}],"resources":{},"imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst","serviceAccountName":"advanced-tidb-discovery"}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: discovery
+      app.kubernetes.io/instance: advanced-tidb
+      app.kubernetes.io/managed-by: tidb-operator
+      app.kubernetes.io/name: tidb-cluster
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: discovery
+        app.kubernetes.io/instance: advanced-tidb
+        app.kubernetes.io/managed-by: tidb-operator
+        app.kubernetes.io/name: tidb-cluster
+    spec:
+      containers:
+        - name: discovery
+          image: pingcap/tidb-operator:v1.3.8
+          command:
+            - /usr/local/bin/tidb-discovery
+          ports:
+            - name: discovery
+              containerPort: 10261
+              protocol: TCP
+            - name: proxy
+              containerPort: 10262
+              protocol: TCP
+          env:
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: TZ
+              value: UTC
+            - name: TC_NAME
+              value: advanced-tidb
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: advanced-tidb-discovery
+      serviceAccount: advanced-tidb-discovery
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
