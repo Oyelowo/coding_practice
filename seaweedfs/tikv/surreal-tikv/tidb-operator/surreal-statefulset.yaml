@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: surrealdb
+  namespace: tikv-cluster
+  labels:
+    app: surrealdb
+spec:
+  ports:
+  - port: 8000
+    name: surrealdb
+  clusterIP: None
+  selector:
+    app: surrealdb
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: surrealdb
+  namespace: tikv-cluster
+spec:
+  serviceName: "surrealdb"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: surrealdb
+  template:
+    metadata:
+      labels:
+        app: surrealdb
+    spec:
+      containers:
+      - name: surrealdb
+        image: surrealdb/surrealdb:latest
+        command: ["/surreal"]
+        args: ["start", "--log", "debug", "--user", "root", "--pass", "root", "tikv://asts-pd:2379"]
+        # command: ["start --log debug --user root --pass tikv://asts-pd:2379"]
+        # args: ["start", "--log", "debug", "--user", "root", "--pass", "root", "memory"]
+        ports:
+        - containerPort: 8000
+          name: surrealdb
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/surrealdb/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+

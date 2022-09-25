@@ -3056,7 +3056,9 @@ dependencies = [
 name = "surreal-tikv"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "futures 0.1.31",
+ "serde_json",
  "surrealdb",
  "tikv-client",
  "tokio",
