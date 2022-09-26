@@ -1,8 +1,8 @@
 apiVersion: pingcap.com/v1alpha1
 kind: TidbMonitor
 metadata:
-  name: advanced-tidb
-  namespace: neodb
+  name: tikv-cluster-monitoring
+  namespace: tikv-cluster
 
 spec:
   #######################
@@ -11,8 +11,8 @@ spec:
 
   ## TidbCluster to be monitored
   clusters:
-  - name: advanced-tidb
-    namespace: neodb
+  - name: asts
+    namespace: tikv-cluster
     ## ClusterDomain is the domain of TidbCluster object
     # clusterDomain: cluster.local
 
@@ -90,7 +90,7 @@ spec:
   ## ExternalLabels determines the labels to add to any time series or alerts when communicating with
   ## external systems (federation, remote storage, Alertmanager).
   # externalLabels:
-  #   tidb-cluster: advanced-tidb
+  #   tidb-cluster: asts
 
   ## ReplicaExternalLabelName is name of Prometheus external label used to denote replica name.
   ## Defaults to the value of `prometheus_replica`.
@@ -174,7 +174,7 @@ spec:
     # ingress:
     ##  hosts describe the hosts for the ingress.
     #   hosts:
-    #   - prometheus-advanced-tidb.example.com
+    #   - prometheus-asts.example.com
     ##  annotations describe the desired annotations for the ingress
     #   annotations:
     #     foo: bar
@@ -319,7 +319,7 @@ spec:
     # ingress:
       ## Hosts describe the hosts for the ingress.
       # hosts:
-      # - grafana-advanced-tidb.example.com
+      # - grafana-asts.example.com
       ## Ingress Annotations configuration.
       ## Ref of ingress-nginx: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/
       # annotations:

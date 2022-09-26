@@ -15,12 +15,13 @@ spec:
 ---
 
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
+# kind: StatefulSet
 metadata:
   name: surrealdb
   namespace: tikv-cluster
 spec:
-  serviceName: "surrealdb"
+  # serviceName: "surrealdb"
   replicas: 2
   selector:
     matchLabels:
@@ -40,15 +41,15 @@ spec:
         ports:
         - containerPort: 8000
           name: surrealdb
-        volumeMounts:
-        - name: www
-          mountPath: /usr/share/surrealdb/html
-  volumeClaimTemplates:
-  - metadata:
-      name: www
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+  #       volumeMounts:
+  #       - name: www
+  #         mountPath: /usr/share/surrealdb/html
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: www
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
 

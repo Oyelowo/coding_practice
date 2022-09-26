@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "surrealdb.js": "^0.5.0"
+  },
+  "name": "deno",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "oyelowo",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "devDependencies": {
+    "swc": "^1.0.11"
+  }
+}
