@@ -1,0 +1,41 @@
+apiVersion: pingcap.com/v1alpha1
+kind: TidbCluster
+metadata:
+  annotations:
+    tikv.tidb.pingcap.com/delete-slots: '[1]'
+  name: seaweedfs-tikv
+spec:
+  version: v6.1.0
+  timezone: UTC
+  pvReclaimPolicy: Retain
+  enableDynamicConfiguration: true
+  configUpdateStrategy: RollingUpdate
+  pd:
+    baseImage: pingcap/pd
+    maxFailoverCount: 0
+    replicas: 3
+    requests:
+      storage: "10Gi"
+    config: {}
+    # config: |
+    #   [dashboard]
+    #     internal-proxy = false
+
+  tikv:
+    baseImage: pingcap/tikv
+    maxFailoverCount: 0
+    replicas: 3
+    requests:
+      storage: "100Gi"
+    config: {}
+    # config: |
+    #   [dashboard]
+    #     internal-proxy = true
+
+  tidb:
+    baseImage: pingcap/tidb
+    maxFailoverCount: 0
+    replicas: 2
+    service:
+      type: ClusterIP
+    config: {}

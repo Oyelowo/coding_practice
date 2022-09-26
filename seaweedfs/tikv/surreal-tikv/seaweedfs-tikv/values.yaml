@@ -1,0 +1,21 @@
+storageClasses:
+- name: juicefs-sc
+  enabled: true
+  reclaimPolicy: Retain
+  backend:
+    name: "lowo"
+    metaurl: "lowo.com"
+    storage: "local"
+    accessKey: "dayo"
+    secretKey: "1234"
+    bucket: "temi"
+    # If you need to set the time zone of the JuiceFS Mount Pod, please uncomment the next line, the default is UTC time.
+    # envs: "{TZ: Asia/Shanghai}"
+  # mountPod:
+  #   resources:
+  #     limits:
+  #       cpu: "<cpu-limit>"
+  #       memory: "1G"
+  #     requests:
+  #       cpu: "<cpu-request>"
+  #       memory: "<memory-request>"
