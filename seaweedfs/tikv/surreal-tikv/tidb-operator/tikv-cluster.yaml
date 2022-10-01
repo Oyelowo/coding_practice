@@ -14,6 +14,7 @@ spec:
     baseImage: pingcap/pd
     maxFailoverCount: 0
     replicas: 3
+    storageClassName: rook-ceph-block
     requests:
       storage: "10Gi"
     config: {}
@@ -24,6 +25,7 @@ spec:
   tikv:
     baseImage: pingcap/tikv
     maxFailoverCount: 0
+    storageClassName: rook-ceph-block
     replicas: 3
     requests:
       storage: "100Gi"
