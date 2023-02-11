@@ -27,7 +27,7 @@
     "@types/express-promise-router": "^3.0.0",
     "@types/mongodb": "^3.5.25",
     "@types/node": "^14.6.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.57"
   },
