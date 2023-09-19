@@ -1,0 +1,10 @@
+{
+  "name": "fluvio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "oyelowo",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
