@@ -110,13 +110,89 @@ class SinglyLinkedList {
     unsift = ( val ) =>{
         let newHead = new Node(val);
         // let newHead = newNode();
-        newHead.next = this.head;
-        this.head = newHead;
+        if (this.head) {
+            newHead.next = this.head;
+            this.head = newHead;
+            
+        }else{
+            this.head = newHead;
+            this.tail = newHead;
+        }
         this.length ++;
-        return this.head;
+        return this;
     }
 
-    
+    get = (index) => {
+        if (index<0) {
+            return undefined
+        }
+        let i = 0;
+        let currHead = this.head;
+        while(i!== index){
+            currHead = currHead?.next ?? null;
+            if (!currHead) {
+                return null;
+            }
+            i++;
+        }  
+        
+        return currHead;
+    }
+
+    set = (item, index) => {
+        if (index < 0 ) {
+            return undefined
+        }
+
+        let i = 0;
+        let currentHead = this.head;
+        while(i!==index){
+            currentHead = currentHead?.next ?? null;
+            if (!currentHead) {
+                break;
+            }
+            i++;
+        }
+        currentHead = item;
+    }
+
+    insert = (index, item) => {
+
+    }
+
+    remove = (index) => {
+        // A, B, C, D
+        if (index === 0) return !!this.shift();
+        let value = this.get(index - 1);
+        if (!value) return false;
+        if (index === this.length - 1) {
+            this.pop()
+        };
+
+
+        value.next = value?.next?.next;
+        return true
+    }
+
+    reverse = ()=> {
+        // A > B > C > D > E
+        // 1
+        // next = head.next;
+        // current = head;
+        // prev = null;
+        // 
+        // next.next = current;
+        
+        // 2.
+        // next = head.next;
+        // current = head;
+        // prev = null;
+
+        // 
+        // 
+    }
+
+
 
 }
 
@@ -146,7 +222,14 @@ console.log("UNshift", list.unsift("LOWO"))
 // console.log("shift", list.shift())
 // console.log("shift", list.shift())
 // console.log("shift", list.shift())
-console.log("LIST", list)
+console.log("LIST", JSON.stringify(list));
+list.remove(2);
+console.log("LIST", JSON.stringify(list));
+// console.log("LIST", list.get(0)?.val)
+// console.log("LIST", list.get(1)?.val)
+// console.log("LIST", list.get(2)?.val)
+// console.log("LIST", list.get(3)?.val)
+// console.log("LIST", list.get(4)?.val)
 
 
 // console.log(list.head);
