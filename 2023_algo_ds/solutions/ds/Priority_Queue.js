@@ -1,37 +1,46 @@
 class PriorityQueue {
     constructor(){
-        this.values = [];
+        this.heap = [];
     }
     enqueue(val, priority){
         let newNode = new Node(val, priority);
-        this.values.push(newNode);
-        this.bubbleUp();
+        this.heap.push(newNode);
+        // this.bubbleUp();
+        this.bubbleUpRecursive(this.heap.length - 1);
     }
     bubbleUp(){
-        let idx = this.values.length - 1;
-        const element = this.values[idx];
+        let idx = this.heap.length - 1;
+        const element = this.heap[idx];
         while(idx > 0){
             let parentIdx = Math.floor((idx - 1)/2);
-            let parent = this.values[parentIdx];
+            let parent = this.heap[parentIdx];
             if(element.priority >= parent.priority) break;
-            this.values[parentIdx] = element;
-            this.values[idx] = parent;
+            this.heap[parentIdx] = element;
+            this.heap[idx] = parent;
             idx = parentIdx;
         }
     }
+    
+    bubbleUpRecursive=(index)=>{
+        const parentIdx = Math.floor((index - 1) / 2);
+        if (parentIdx < 0 || this.heap[parentIdx]?.priority <= this.heap[index]?.priority) return;
+        [this.heap[parentIdx], this.heap[index]] = [this.heap[index], this.heap[parentIdx]];
+        this.bubbleUpRecursive(parentIdx);
+    }
+    
     dequeue(){
-        const min = this.values[0];
-        const end = this.values.pop();
-        if(this.values.length > 0){
-            this.values[0] = end;
+        const min = this.heap[0];
+        const end = this.heap.pop();
+        if(this.heap.length > 0){
+            this.heap[0] = end;
             this.sinkDown();
         }
         return min;
     }
     sinkDown(){
         let idx = 0;
-        const length = this.values.length;
-        const element = this.values[0];
+        const length = this.heap.length;
+        const element = this.heap[0];
         while(true){
             let leftChildIdx = 2 * idx + 1;
             let rightChildIdx = 2 * idx + 2;
@@ -39,13 +48,13 @@ class PriorityQueue {
             let swap = null;
 
             if(leftChildIdx < length){
-                leftChild = this.values[leftChildIdx];
+                leftChild = this.heap[leftChildIdx];
                 if(leftChild.priority < element.priority) {
                     swap = leftChildIdx;
                 }
             }
             if(rightChildIdx < length){
-                rightChild = this.values[rightChildIdx];
+                rightChild = this.heap[rightChildIdx];
                 if(
                     (swap === null && rightChild.priority < element.priority) || 
                     (swap !== null && rightChild.priority < leftChild.priority)
@@ -54,8 +63,8 @@ class PriorityQueue {
                 }
             }
             if(swap === null) break;
-            this.values[idx] = this.values[swap];
-            this.values[swap] = element;
+            this.heap[idx] = this.heap[swap];
+            this.heap[swap] = element;
             idx = swap;
         }
     }
@@ -75,6 +84,8 @@ ER.enqueue("high fever",4)
 ER.enqueue("broken arm",2)
 ER.enqueue("glass in foot",3)
 
+
+console.log(ER);
 
 
 
