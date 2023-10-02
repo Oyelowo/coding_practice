@@ -10,25 +10,25 @@ class WeightedGraph {
         this.adjacencyList[vertex2].push({node:vertex1, weight});
     }
     Dijkstra(start, finish){
-        const nodes = new PriorityQueue();
+        const nodesQueue = new PriorityQueue();
         const distances = {};
         const previous = {};
-        let path = [] //to return at end
+        let path = []; //to return at end
         let smallest;
         //build up initial state
         for(let vertex in this.adjacencyList){
             if(vertex === start){
                 distances[vertex] = 0;
-                nodes.enqueue(vertex, 0);
+                nodesQueue.enqueue(vertex, 0);
             } else {
                 distances[vertex] = Infinity;
-                nodes.enqueue(vertex, Infinity);
+                nodesQueue.enqueue(vertex, Infinity);
             }
             previous[vertex] = null;
         }
         // as long as there is something to visit
-        while(nodes.values.length){
-            smallest = nodes.dequeue().val;
+        while(nodesQueue.values.length){
+            smallest = nodesQueue.dequeue().val;
             if(smallest === finish){
                 //WE ARE DONE
                 //BUILD UP PATH TO RETURN AT END
@@ -40,6 +40,8 @@ class WeightedGraph {
             } 
             if(smallest || distances[smallest] !== Infinity){
                 for(let neighbor in this.adjacencyList[smallest]){
+                    // console.log("this.adjacencyList[smallest]", this.adjacencyList[smallest])
+                    console.log("neighbour", neighbor);
                     //find neighboring node
                     let nextNode = this.adjacencyList[smallest][neighbor];
                     //calculate new distance to neighboring node
@@ -51,7 +53,7 @@ class WeightedGraph {
                         //updating previous - How we got to neighbor
                         previous[nextNeighbor] = smallest;
                         //enqueue in priority queue with new priority
-                        nodes.enqueue(nextNeighbor, candidate);
+                        nodesQueue.enqueue(nextNeighbor, candidate);
                     }
                 }
             }
@@ -67,10 +69,12 @@ class PriorityQueue {
     enqueue(val, priority){
         let newNode = new Node(val, priority);
         this.values.push(newNode);
-        this.bubbleUp();
+        this.bubbleUp(this.values.length - 1);
     }
-    bubbleUp(){
-        let idx = this.values.length - 1;
+    
+    
+    bubbleUp(index){
+        let idx = index;
         const element = this.values[idx];
         while(idx > 0){
             let parentIdx = Math.floor((idx - 1)/2);
@@ -90,6 +94,7 @@ class PriorityQueue {
         }
         return min;
     }
+    
     sinkDown(){
         let idx = 0;
         const length = this.values.length;
@@ -98,27 +103,27 @@ class PriorityQueue {
             let leftChildIdx = 2 * idx + 1;
             let rightChildIdx = 2 * idx + 2;
             let leftChild,rightChild;
-            let swap = null;
+            let swapIndex = null;
 
             if(leftChildIdx < length){
                 leftChild = this.values[leftChildIdx];
                 if(leftChild.priority < element.priority) {
-                    swap = leftChildIdx;
+                    swapIndex = leftChildIdx;
                 }
             }
             if(rightChildIdx < length){
                 rightChild = this.values[rightChildIdx];
                 if(
-                    (swap === null && rightChild.priority < element.priority) || 
-                    (swap !== null && rightChild.priority < leftChild.priority)
+                    (swapIndex === null && rightChild.priority < element.priority) || 
+                    (swapIndex !== null && rightChild.priority < leftChild.priority)
                 ) {
-                   swap = rightChildIdx;
+                   swapIndex = rightChildIdx;
                 }
             }
-            if(swap === null) break;
-            this.values[idx] = this.values[swap];
-            this.values[swap] = element;
-            idx = swap;
+            if(swapIndex === null) break;
+            this.values[idx] = this.values[swapIndex];
+            this.values[swapIndex] = element;
+            idx = swapIndex;
         }
     }
 }
@@ -148,7 +153,7 @@ graph.addEdge("D","F", 1);
 graph.addEdge("E","F", 1);
 
 
-graph.Dijkstra("A", "E");
+console.log(graph.Dijkstra("A", "E"));
 
 
 

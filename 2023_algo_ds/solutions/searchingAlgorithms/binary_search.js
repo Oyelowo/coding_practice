@@ -1,3 +1,14 @@
+
+
+
+
+
+// [4,5,6,7,78,9]
+// st    md    en
+// if st>md .. st = md + 1
+// en <md = en = md -1
+// md = Mathflow((st + en) / 2)
+// if arr[md] === elem ret midd else -1
 // Original Solution
 function binarySearch(arr, elem) {
     var start = 0;
