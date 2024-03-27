@@ -8,6 +8,8 @@ def insertion_sort(arr):
             if arr[j] > popped_item:
                 arr[j + 1] = arr[j]
                 current_min_index = j
+            else:
+                break
 
         arr[current_min_index] = popped_item
 
