@@ -25,6 +25,18 @@ while current_node.next is not None:
     current_node = current_node.next
     print(current_node.data)
 
+
+def traverse(head):
+    current_node = head
+
+    while current_node:
+        print(current_node.data)
+        current_node = current_node.next
+
+
+traverse(node1)
+
+
 # print(str(node1.next.next.next))
 
 # current_node = node1
